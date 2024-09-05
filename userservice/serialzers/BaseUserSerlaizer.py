@@ -6,7 +6,7 @@ from ..models.Baseuser import UserBase
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     password_confirm = serializers.CharField(write_only=True)
-    profile_image=serializers.ImageField()
+    profile_image=serializers.ImageField(required=False)
 
     class Meta:
         model = UserBase
@@ -21,6 +21,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data.pop('password_confirm')
+        profile_image = validated_data.pop('profile_image', None)
         user = UserBase(
             user_name=validated_data['user_name'],
             email=validated_data['email'],
@@ -28,7 +29,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             phone_number=validated_data['phone_number'],
             government=validated_data['government'],
             area=validated_data['area'],
-            profile_image=validated_data['profile_image'],
+            profile_image=profile_image,
         )
         user.set_password(validated_data['password'])
         user.save()
