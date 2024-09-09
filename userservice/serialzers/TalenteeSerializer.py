@@ -13,13 +13,15 @@ def get_talent_by_id(id):
 class TalenteeRegistrationSerializer(serializers.ModelSerializer):
     user = UserRegistrationSerializer()
     talent_id = serializers.IntegerField()
+   
 
     class Meta:
         model = Talentee
-        fields = ['user', 'talent_id']
+        fields = [ 'user','talent_id']
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
+        
         user_serializer = UserRegistrationSerializer(data=user_data)
         user_serializer.is_valid(raise_exception=True)
         user = user_serializer.save()
@@ -28,5 +30,5 @@ class TalenteeRegistrationSerializer(serializers.ModelSerializer):
         if talent is None:
             raise serializers.ValidationError({"detail": "No valid Talent found."})
 
-        Talentee_profile = Talentee.objects.create(user=user, talent=talent)
-        return Talentee_profile
+        talentee_profile = Talentee.objects.create(user=user, talent=talent)
+        return talentee_profile
