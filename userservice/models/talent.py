@@ -8,7 +8,7 @@ class Talent(models.Model):
     
     
 class Talentee(models.Model):
-    user=models.OneToOneField(UserBase , on_delete=models.CASCADE)
+    user=models.OneToOneField(UserBase , on_delete=models.CASCADE,primary_key=True)
     talent=models.ForeignKey(Talent,on_delete=models.SET_NULL,null=True)
 
     def __str__(self) -> str:

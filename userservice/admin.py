@@ -10,6 +10,7 @@ from .models.Skill import Skill,skilled_in
 from .models.investgator import Investgator 
 from .models.admin import TheAdmin ,ContactRequest
 from .models.follow import Follow
+from .models.inetrsts import Interst
 
 
 admin.site.register(Talent)
@@ -27,7 +28,7 @@ admin.site.register(Investgator)
 
 admin.site.register(Follow)
 
-
+admin.site.register(Interst)
 
 
 

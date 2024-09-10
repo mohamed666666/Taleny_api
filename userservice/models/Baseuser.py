@@ -45,7 +45,7 @@ class UserBase(AbstractBaseUser, PermissionsMixin):
     about = models.TextField( 'about', max_length=500, blank=True)
     age=models.IntegerField(null=True)
     # Delivery details
-    profile_image=models.ImageField(upload_to='profile_images/' )
+    profile_image=models.ImageField(upload_to='profile_images/',default='profile_images/default.png' )
     phone_number = models.CharField(max_length=15, blank=True)
     government = models.CharField(max_length=150, blank=True)
     area = models.CharField(max_length=150, blank=True)

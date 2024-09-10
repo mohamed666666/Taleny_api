@@ -32,3 +32,4 @@ class TalenteeRegistrationSerializer(serializers.ModelSerializer):
 
         talentee_profile = Talentee.objects.create(user=user, talent=talent)
         return talentee_profile
+    

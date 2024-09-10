@@ -13,6 +13,6 @@ class TheAdmin(models.Model):
     
 class ContactRequest(models.Model):
     request_creator=models.ForeignKey(Investgator ,on_delete=models.CASCADE)
-    talentee_requested=models.ForeignKey(Talentee,on_delete=models.SET_NULL , null=True)
+    talentee_requested=models.ForeignKey(Talentee,on_delete=models.CASCADE)
     status=models.BooleanField(default=False)
     

@@ -1,19 +1,72 @@
-
-from ..serialzers.SkillSerializer import SkillSerlaizer
 from rest_framework.permissions import IsAuthenticated ,AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from ..models.Skill import Skill
+from rest_framework import status
+from ..models.Skill import skilled_in,Skill_attachments,Skill
+from django.shortcuts import get_object_or_404
+from ..models.talent import Talentee
+from ..serialzers.SkillSerializer import SkillSerializer,SkillAttachmentsSerializer,SkilledInSerializer
 
 
-class SkillView(APIView):
-    permission_classes = [AllowAny]
-    
+class CreateSkillView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensure the user is authenticated
+
     def post(self, request):
-        skills=Skill.objects.all()
-        print(request.data)
+        # Get the authenticated user and find their Talentee profile
+        user = request.user
+        talentee = get_object_or_404(Talentee, user=user)
         
-        data = SkillSerlaizer(skills, many=True).data
-        return Response(data)
+        # Extract skill data from the request
+        skill_data = request.data.get('skill')
+        attachments = request.FILES.getlist('attachments')  # Get list of files from request
+
+        # Serialize the skill data
+        skill_serializer = SkillSerializer(data=skill_data)
+        if skill_serializer.is_valid():
+            # Save the skill instance
+            skill = skill_serializer.save()
+            
+            # Create a skilled_in object to link Talentee and Skill
+            skilled_in.objects.create(talentee=talentee, skill=skill)
+            
+            # Link the created skill with attachments
+            for file in attachments:
+                Skill_attachments.objects.create(skill=skill, uri=file)
+
+            # Create a response with the created skill and its attachments
+            skill_with_attachments = {
+                "skill": skill_serializer.data,
+                "attachments": SkillAttachmentsSerializer(skill.skill_attachments_set.all(), many=True).data
+            }
+            return Response(skill_with_attachments, status=status.HTTP_201_CREATED)
+        
+        return Response(skill_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class TalnenteeSkillsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Get the authenticated user and find their Talentee profile
+        user = request.user
+        talentee = get_object_or_404(Talentee, user=user)
+        # Retrieve all skills linked to the Talentee via the skilled_in model
+        skilled_at = skilled_in.objects.filter(talentee=talentee)
+        # Serialize the skilled_in instances with related skills and attachments
+        serializer = SkilledInSerializer(skilled_at, many=True)
+        
+        return Response(serializer.data)
     
-    
+
+class TalnenteeByIDSkillsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, user_id):
+        # Find the Talentee profile by the provided user ID
+        talentee = get_object_or_404(Talentee, user__id=user_id)
+        # Retrieve all skills linked to the Talentee via the skilled_in model
+        skilled_at = skilled_in.objects.filter(talentee=talentee)
+        # Serialize the skilled_in instances with related skills and attachments
+        serializer = SkilledInSerializer(skilled_at, many=True)
+        return Response(serializer.data)
