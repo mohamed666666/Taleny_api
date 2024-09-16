@@ -9,8 +9,8 @@ from .views.FollowViews import FollowCreateView,FollowDeleteView,UserFollowersVi
 from .views.ProfileViews import (Get_allInterstsView,SelectInterestView,
                                  GetCurrentUserInterestsView  ,GetUserInterestsByIDView)
 from .views.AdminViews import ContactRequestCreateView,ContactRequestListView
-
-
+from django.conf import settings
+from django.conf.urls.static import static
 app_name ='userservice'
 urlpatterns = [
     path("login/",CustomTokenObtainPairView.as_view(),name="login"),#get token by username and password 
