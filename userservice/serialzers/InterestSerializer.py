@@ -9,3 +9,5 @@ class InterstSerlaizer(serializers.ModelSerializer):
         fields=['id','name','icon']
     
         
+    
+        

@@ -18,7 +18,7 @@ class SkillAttachmentsSerializer(serializers.ModelSerializer):
 class SkilledInSerializer(serializers.ModelSerializer):
     talentee = serializers.PrimaryKeyRelatedField(queryset=Talentee.objects.all())
     skill = SkillSerializer(read_only=True)
-    attachments = SkillAttachmentsSerializer(source='skill.skill_attachments_set', many=True, read_only=True)
+    attachments = SkillAttachmentsSerializer(source='skill.skill_attachments_set', many=True)
 
     class Meta:
         model = skilled_in

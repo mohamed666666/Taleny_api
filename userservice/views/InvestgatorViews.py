@@ -9,3 +9,5 @@ class InvestgatorRegistrationView(generics.CreateAPIView):
     permission_classes = [AllowAny]
     
     
+
+    

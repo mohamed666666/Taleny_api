@@ -4,28 +4,39 @@ from .views.TalenteeViews import TalenteeRegistrationView
 from .views.TalentView import TalentView
 from .views.InvestgatorViews import InvestgatorRegistrationView
 from .views.LoginView import CustomTokenObtainPairView
-from .views.SkillViews import CreateSkillView,TalnenteeSkillsView,TalnenteeByIDSkillsView
+from .views.SkillViews import CreateSkillView,TalnenteeSkillsView,TalnenteeSkillsViewByID
 from .views.FollowViews import FollowCreateView,FollowDeleteView,UserFollowersView
+from .views.ProfileViews import (Get_allInterstsView,SelectInterestView,
+                                 GetCurrentUserInterestsView  ,GetUserInterestsByIDView)
+from .views.AdminViews import ContactRequestCreateView,ContactRequestListView
+
 
 app_name ='userservice'
 urlpatterns = [
     path("login/",CustomTokenObtainPairView.as_view(),name="login"),#get token by username and password 
     path("token/refresh/",TokenRefreshView.as_view(),name="refresh"),
+    #adimn 
+    path('contactrequest/<int:talentee_id>/', ContactRequestCreateView.as_view(), name='create-contact-request'),
+    path('contactrequests/', ContactRequestListView.as_view(), name='get-all-contact-requests-for-admin'),
     
     #Talentee
     path('register/Talentee/', TalenteeRegistrationView.as_view(), name='register-Talentee'),
     #talent views
-    path('alltalents',TalentView.as_view(),name='all_talents')
-    ,
+    path('alltalents',TalentView.as_view(),name='all_talents') ,
     #investgator
     path('register/Investgator/', InvestgatorRegistrationView.as_view(), name='register-Investgator'),
     # skill crud
     path('addskill/',CreateSkillView.as_view(),name='add_skill'),
     path('talenteeskills/',TalnenteeSkillsView.as_view(),name='get_skills'),
-    path('talenteeskills/<int:user_id>/',TalnenteeByIDSkillsView.as_view(),name='get_skills_byid'),
+    path('talenteeskills/<int:user_id>/',TalnenteeSkillsViewByID.as_view(),name='get_skills_byid'),
     # follow crud
     path('createfollow/',FollowCreateView.as_view(),name='create_follow'),
     path('deletefollow/',FollowDeleteView.as_view(),name='delete_follow'),
-    path('follows_to_user/',UserFollowersView.as_view(),name='follows_to_user')
-    
+    path('follows_to_user/',UserFollowersView.as_view(),name='get_follows_current_user')
+    ,
+    ## intersts 
+    path('all_intersts/',Get_allInterstsView.as_view(),name='get_all_intersts'),
+    path('selectInterst/',SelectInterestView.as_view(),name='select_interst_by_id'),
+    path('currentuserintersts/',GetCurrentUserInterestsView.as_view(),name='select_currentuserintersts'),
+    path('userintersts/<int:user_id>/',GetUserInterestsByIDView.as_view(),name='select_userintersts'),
 ]

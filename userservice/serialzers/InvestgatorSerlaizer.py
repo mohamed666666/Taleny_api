@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .BaseUserSerlaizer import UserRegistrationSerializer
 from ..models.investgator import Investgator
 
+
 class InvesgatorRegistrationSerializer(serializers.ModelSerializer):
     user = UserRegistrationSerializer()
     class Meta:
@@ -18,3 +19,5 @@ class InvesgatorRegistrationSerializer(serializers.ModelSerializer):
         investgator=Investgator.objects.create(user=user,cr=validated_data.pop('cr'))
 
         return investgator
+    
+    

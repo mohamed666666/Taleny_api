@@ -25,21 +25,17 @@ class CreateSkillView(APIView):
         if skill_serializer.is_valid():
             # Save the skill instance
             skill = skill_serializer.save()
-            
             # Create a skilled_in object to link Talentee and Skill
             skilled_in.objects.create(talentee=talentee, skill=skill)
-            
             # Link the created skill with attachments
             for file in attachments:
                 Skill_attachments.objects.create(skill=skill, uri=file)
-
             # Create a response with the created skill and its attachments
             skill_with_attachments = {
                 "skill": skill_serializer.data,
                 "attachments": SkillAttachmentsSerializer(skill.skill_attachments_set.all(), many=True).data
             }
             return Response(skill_with_attachments, status=status.HTTP_201_CREATED)
-        
         return Response(skill_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -55,11 +51,10 @@ class TalnenteeSkillsView(APIView):
         skilled_at = skilled_in.objects.filter(talentee=talentee)
         # Serialize the skilled_in instances with related skills and attachments
         serializer = SkilledInSerializer(skilled_at, many=True)
-        
         return Response(serializer.data)
     
 
-class TalnenteeByIDSkillsView(APIView):
+class TalnenteeSkillsViewByID(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, user_id):
