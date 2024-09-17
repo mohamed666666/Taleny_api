@@ -2,6 +2,9 @@ from rest_framework import serializers
 from ..models.follow import Follow
 from ..models.Baseuser import UserBase
 
+
+
+
 class FollowCreateSerializer(serializers.ModelSerializer):
     follow_to = serializers.PrimaryKeyRelatedField(queryset=UserBase.objects.all())
 
@@ -25,7 +28,7 @@ class FollowCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         follow_from = self.context['request'].user
         follow_to = validated_data['follow_to']
-        follow = Follow.objects.create(follow_from=follow_from, follow_to=follow_to, status=True)
+        follow = Follow.objects.create(follow_from=follow_from, follow_to=follow_to)
         return follow
 
 

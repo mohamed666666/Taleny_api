@@ -7,6 +7,26 @@ from ..models.talent import Talentee
 from ..models.investgator import Investgator
 
 
+class UserBaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserBase
+        fields = [
+            'id',
+            'email',
+            'user_name',
+            'full_name',
+            'title',
+            'about',
+            'age',
+            'profile_image',
+            'phone_number',
+            'government',
+            'area',
+           
+        ]
+        read_only_fields = ['id']
+
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     password_confirm = serializers.CharField(write_only=True)
