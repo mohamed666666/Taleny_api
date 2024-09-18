@@ -7,24 +7,48 @@ from ..models.talent import Talentee
 from ..models.investgator import Investgator
 
 
-class UserBaseSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField()
     class Meta:
         model = UserBase
         fields = [
             'id',
-            'email',
             'user_name',
             'full_name',
             'title',
-            'about',
-            'age',
             'profile_image',
-            'phone_number',
-            'government',
-            'area',
-           
+            'role',
         ]
         read_only_fields = ['id']
+    
+    def get_role(self, obj):
+        if hasattr(obj, 'talentee'):
+            return 'Talentee'
+        elif hasattr(obj, 'investgator'):
+            return 'Investigator'
+        return 'None'  # In case the user is neither
+
+
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = UserBase
+        fields = [
+            'id',
+            'user_name',
+            'full_name',
+            'age',
+            'government',
+            'area',
+            'phone_number',
+            'title',
+            'profile_image',
+            
+        ]
+        read_only_fields = ['id']
+    
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):

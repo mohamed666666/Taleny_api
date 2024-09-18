@@ -5,16 +5,16 @@ from rest_framework.permissions import IsAuthenticated
 from django.db.models import Count, Q
 from ..models.Baseuser import UserBase
 from ..models.inetrsts import Intersting_in
-from ..serialzers.BaseUserSerlaizer import UserBaseSerializer
+from ..serialzers.BaseUserSerlaizer import UserSerializer
 
 
-class CommonInterestUsersView(APIView):
+class UsersOrderByInterstsView(APIView):
     permission_classes = [IsAuthenticated]
+
 
     def get(self, request):
         # Step 1: Get the interests of the logged-in user
         user_interests = Intersting_in.objects.filter(user=request.user).values_list('interst', flat=True)
-
         # Step 2: Get all users and annotate with shared_interests count (including 0 for no shared interests)
         users_with_shared_interests = (
             UserBase.objects
@@ -26,7 +26,7 @@ class CommonInterestUsersView(APIView):
         )
 
         # Step 3: Serialize the data
-        serializer = UserBaseSerializer(users_with_shared_interests, many=True)
+        serializer = UserSerializer(users_with_shared_interests, many=True)
 
         # Step 4: Return the response
         return Response(serializer.data)

@@ -5,12 +5,18 @@ from .views.TalentView import TalentView
 from .views.InvestgatorViews import InvestgatorRegistrationView
 from .views.LoginView import CustomTokenObtainPairView
 from .views.SkillViews import CreateSkillView,TalnenteeSkillsView,TalnenteeSkillsViewByID
-from .views.FollowViews import FollowCreateView,FollowDeleteView,UserFollowersView
-from .views.ProfileViews import (Get_allInterstsView,SelectInterestView,
+from .views.FollowViews import (FollowCreateView,FollowDeleteView,FollowersToCurrentUserView,
+                               AcceptFollowView, )
+from .views.InterstsViews import (Get_allInterstsView,SelectInterestView,
                                  GetCurrentUserInterestsView  ,GetUserInterestsByIDView)
 from .views.AdminViews import ContactRequestCreateView,ContactRequestListView
+from .views.Usersviews import UsersOrderByInterstsView
+from .views.ProfileViews import UserProflieByid
+
 from django.conf import settings
 from django.conf.urls.static import static
+
+
 app_name ='userservice'
 urlpatterns = [
     path("login/",CustomTokenObtainPairView.as_view(),name="login"),#get token by username and password 
@@ -32,11 +38,15 @@ urlpatterns = [
     # follow crud
     path('createfollow/',FollowCreateView.as_view(),name='create_follow'),
     path('deletefollow/',FollowDeleteView.as_view(),name='delete_follow'),
-    path('follows_to_user/',UserFollowersView.as_view(),name='get_follows_current_user')
-    ,
-    ## intersts 
+    path('follows_to_user/',FollowersToCurrentUserView.as_view(),name='get_follows_current_user'),
+    path('accept_follow/',AcceptFollowView.as_view(),name='accept_follows_current_user'),
+    
+    #user profile by id 
+    path('user_profile/<int:user_id>/',UserProflieByid.as_view(),name='get_user_data_by_id'),
+    # intersts 
     path('all_intersts/',Get_allInterstsView.as_view(),name='get_all_intersts'),
     path('selectInterst/',SelectInterestView.as_view(),name='select_interst_by_id'),
     path('currentuserintersts/',GetCurrentUserInterestsView.as_view(),name='select_currentuserintersts'),
     path('userintersts/<int:user_id>/',GetUserInterestsByIDView.as_view(),name='select_userintersts'),
+    path('sugested-users/',UsersOrderByInterstsView.as_view(),name='get_users_with_common_interst')
 ]
