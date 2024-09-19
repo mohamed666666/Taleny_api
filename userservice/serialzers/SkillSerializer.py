@@ -6,13 +6,15 @@ class SkillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
         fields = ['id', 'name', 'skill_desc']
+    
+
 
 # Serializer for the Skill_attachments model
 class SkillAttachmentsSerializer(serializers.ModelSerializer):
-    skill = SkillSerializer(read_only=True)  # Nested serializer to show skill details
+    # Nested serializer to show skill details
     class Meta:
         model = Skill_attachments
-        fields = ['id', 'skill', 'uri']
+        fields = ['id',  'uri']
 
 # Serializer for the skilled_in model to link skills to a Talentee
 class SkilledInSerializer(serializers.ModelSerializer):
@@ -23,3 +25,5 @@ class SkilledInSerializer(serializers.ModelSerializer):
     class Meta:
         model = skilled_in
         fields = [ 'talentee', 'skill', 'attachments']
+        
+        

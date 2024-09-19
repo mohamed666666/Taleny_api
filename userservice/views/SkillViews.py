@@ -6,21 +6,26 @@ from ..models.Skill import skilled_in,Skill_attachments,Skill
 from django.shortcuts import get_object_or_404
 from ..models.talent import Talentee
 from ..serialzers.SkillSerializer import SkillSerializer,SkillAttachmentsSerializer,SkilledInSerializer
+from rest_framework.parsers import MultiPartParser, FormParser
+
 
 
 class CreateSkillView(APIView):
     permission_classes = [IsAuthenticated]  # Ensure the user is authenticated
-
+    parser_classes = [MultiPartParser, FormParser]
     def post(self, request):
         # Get the authenticated user and find their Talentee profile
         user = request.user
         talentee = get_object_or_404(Talentee, user=user)
         
         # Extract skill data from the request
-        skill_data = request.data.get('skill')
+        skill_data = {
+            'name': request.data.get('skill.name'),
+            'skill_desc': request.data.get('skill.skill_desc')
+        }
+        attachments = request.FILES.getlist('attachments') 
         attachments = request.FILES.getlist('attachments')  # Get list of files from request
-
-        # Serialize the skill data
+     
         skill_serializer = SkillSerializer(data=skill_data)
         if skill_serializer.is_valid():
             # Save the skill instance
@@ -37,6 +42,8 @@ class CreateSkillView(APIView):
             }
             return Response(skill_with_attachments, status=status.HTTP_201_CREATED)
         return Response(skill_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 

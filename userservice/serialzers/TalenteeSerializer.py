@@ -22,7 +22,7 @@ class TalenteeRegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user_data = validated_data.pop('user')
         
-        user_serializer = UserRegistrationSerializer(data=user_data)
+        user_serializer = UserRegistrationSerializer(data=user_data, context=self.context)
         user_serializer.is_valid(raise_exception=True)
         user = user_serializer.save()
 

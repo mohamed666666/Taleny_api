@@ -28,7 +28,7 @@ urlpatterns = [
     #Talentee
     path('register/Talentee/', TalenteeRegistrationView.as_view(), name='register-Talentee'),
     #talent views
-    path('alltalents',TalentView.as_view(),name='all_talents') ,
+    path('alltalents',TalentView.as_view(),name='get_all_talents') ,
     #investgator
     path('register/Investgator/', InvestgatorRegistrationView.as_view(), name='register-Investgator'),
     # skill crud
@@ -38,7 +38,7 @@ urlpatterns = [
     # follow crud
     path('createfollow/',FollowCreateView.as_view(),name='create_follow'),
     path('deletefollow/',FollowDeleteView.as_view(),name='delete_follow'),
-    path('follows_to_user/',FollowersToCurrentUserView.as_view(),name='get_follows_current_user'),
+    path('followers/',FollowersToCurrentUserView.as_view(),name='get_follows_current_user'),
     path('accept_follow/',AcceptFollowView.as_view(),name='accept_follows_current_user'),
     
     #user profile by id 

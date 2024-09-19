@@ -16,5 +16,7 @@ class UserProflieByid(APIView):
         except UserBase.DoesNotExist:
             return Response({"error": "User not found"}, status=404)
         
+        
+
 
     

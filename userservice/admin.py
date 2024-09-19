@@ -11,6 +11,7 @@ from .models.investgator import Investgator
 from .models.admin import TheAdmin ,ContactRequest
 from .models.follow import Follow
 from .models.inetrsts import Interst
+from .models.identfications import Identifications
 
 
 admin.site.register(Talent)
@@ -29,7 +30,7 @@ admin.site.register(Investgator)
 admin.site.register(Follow)
 
 admin.site.register(Interst)
-
+admin.site.register(Identifications)
 
 
 class UserBaseAdmin(UserAdmin):

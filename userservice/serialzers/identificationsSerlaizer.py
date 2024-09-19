@@ -6,3 +6,4 @@ class IdentifcationsSerlaizer(serializers.ModelSerializer):
     
     class Meta:
         model=Identifications
+        fields = ['url']
