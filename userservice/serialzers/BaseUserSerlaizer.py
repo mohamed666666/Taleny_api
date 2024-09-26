@@ -63,8 +63,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserBase
         fields = [
-            'id',
-            'user_name',
             'full_name',
             'title',
             'profile_image',
@@ -77,7 +75,7 @@ class UserSerializer(serializers.ModelSerializer):
             return 'Talentee'
         elif hasattr(obj, 'investgator'):
             return 'Investigator'
-        return 'None'  # In case the user is neither
+        return 'Admin'  # In case the user is neither
 
 
 
@@ -93,9 +91,9 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             'age',
             'government',
             'area',
+            'about',
             'phone_number',
             'title',
             'profile_image',
-            
         ]
         read_only_fields = ['id']

@@ -13,11 +13,10 @@ class LikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Like
-        fields = ['created_by', 'created_at', 'content_type', 'object_id']
+        fields = [ 'created_at', 'content_type', 'object_id']
 
     def validate(self, data):
         user = self.context['request'].user
-        
         # Ensure the object being liked exists
         model = data['content_type'].model_class()
         try:

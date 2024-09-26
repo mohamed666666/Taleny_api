@@ -41,6 +41,13 @@ class FollowersToCurrentUserView(APIView):
         return Response(selaizer.data ,status=200)
     
 
+class usersFollowedByCurrentUserView(APIView):
+    def get(self, request):
+        # Check if the follow relationship exists
+        follows=Follow.objects.filter(follow_from=request.user ,status=True)
+        selaizer=FollowToCurrentUserSerlaizer(follows,many=True)
+        return Response(selaizer.data ,status=200)
+
 
 class FollowerRequestsToCurrentUserView(APIView):
     def get(self, request):
