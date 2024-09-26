@@ -38,24 +38,21 @@ class CreatePostView(APIView):
         
 class RetrivePost_by_id(APIView):
     permission_classes = [IsAuthenticated]
-
     def get(self, request, post_id):
         # Fetch the post object
         post = get_object_or_404(Post, id=post_id)
-
         # Fetch likes related to the post
         likes = Like.objects.filter(
             content_type=ContentType.objects.get_for_model(Post), 
             object_id=post.id
         )
-
+        print(len(likes))
+        
         # Serialize the post
         post_serializer = RetrivePostSerializer(post)
-
         # Add likes to the serialized data
         data = post_serializer.data
         data['likes_on_post'] = LikeSerializer(likes, many=True).data
-
         return Response(data, status=200)
         
         
