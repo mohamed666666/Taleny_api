@@ -6,8 +6,8 @@ from .views.InvestgatorViews import InvestgatorRegistrationView
 from .views.LoginView import CustomTokenObtainPairView
 
 #skill 
-from .views.SkillViews import (CreateSkillView,
-                               TalnenteeSkillsView,
+from .views.SkillViews import (SkillCreateGetView,
+                              
                                TalnenteeSkillsViewByID,
                                UpdateSkillView,
                                DeleteSkillView,
@@ -45,8 +45,8 @@ urlpatterns = [
     #investgator
     path('register/Investgator/', InvestgatorRegistrationView.as_view(), name='register-Investgator'),
     # skill crud
-    path('talenteeskills/',CreateSkillView.as_view(),name='add_skill'),
-    path('talenteeskills/',TalnenteeSkillsView.as_view(),name='get_skills'),
+    path('talenteeskills/',SkillCreateGetView.as_view(),name='add_skill'),
+    path('talenteeskills/',SkillCreateGetView.as_view(),name='get_skills'),
     path('talentee-skill/<int:skill_id>/',SkillByID.as_view(),name='get_skill_by_skill-id'),
     path('talenteeskills/<int:user_id>/',TalnenteeSkillsViewByID.as_view(),name='get_skills_byusr-id'),
     path('talenteeskills/update/<int:skill_id>/',UpdateSkillView.as_view(),name='update_skilldata_by-skill-id'),

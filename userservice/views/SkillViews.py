@@ -10,7 +10,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 
 
 
-class CreateSkillView(APIView):
+class SkillCreateGetView(APIView):
     permission_classes = [IsAuthenticated]  # Ensure the user is authenticated
     parser_classes = [MultiPartParser, FormParser]
     def post(self, request):
@@ -42,6 +42,16 @@ class CreateSkillView(APIView):
             }
             return Response(skill_with_attachments, status=status.HTTP_201_CREATED)
         return Response(skill_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request):
+        # Get the authenticated user and find their Talentee profile
+        user = request.user
+        talentee = get_object_or_404(Talentee, user=user)
+        # Retrieve all skills linked to the Talentee via the skilled_in model
+        skilled_at = skilled_in.objects.filter(talentee=talentee)
+        # Serialize the skilled_in instances with related skills and attachments
+        serializer = SkilledInSerializer(skilled_at, many=True)
+        return Response(serializer.data)
 
 
 
@@ -77,18 +87,8 @@ class DeleteSkillView(APIView):
 
 
 
-class TalnenteeSkillsView(APIView):
-    permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        # Get the authenticated user and find their Talentee profile
-        user = request.user
-        talentee = get_object_or_404(Talentee, user=user)
-        # Retrieve all skills linked to the Talentee via the skilled_in model
-        skilled_at = skilled_in.objects.filter(talentee=talentee)
-        # Serialize the skilled_in instances with related skills and attachments
-        serializer = SkilledInSerializer(skilled_at, many=True)
-        return Response(serializer.data)
+    
     
 
 class TalnenteeSkillsViewByID(APIView):
