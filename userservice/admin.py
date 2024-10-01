@@ -33,25 +33,28 @@ admin.site.register(Interst)
 admin.site.register(Identifications)
 
 
+
 class UserBaseAdmin(UserAdmin):
     # The fields to be used in displaying the User model.
-    list_display = ('email', 'user_name', 'full_name', 'is_staff', 'is_active','profile_image','phone_number')
+    list_display = ('email', 'user_name', 'full_name', 'is_staff', 'is_active', 'profile_image', 'phone_number')
     list_filter = ('is_staff', 'is_active')
+    
     fieldsets = (
         (None, {'fields': ('email', 'user_name', 'password')}),
         ('Personal Info', {'fields': ('full_name', 'title', 'about', 'age', 'profile_image', 'phone_number', 'government', 'area')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
-        ('Important dates', {'fields': ('last_login', 'created', 'updated')}),
+        ('Important dates', {'fields': ['last_login']}),  # Remove 'created' and 'updated'
     )
+    
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'user_name','profile_image', 'password1', 'password2', 'is_staff', 'is_active'),
+            'fields': ('email', 'user_name', 'profile_image', 'password1', 'password2', 'is_staff', 'is_active'),
         }),
     )
+    
     search_fields = ('email', 'user_name')
     ordering = ('email',)
-
+    
 # Register the UserBase model with the custom admin configuration
 admin.site.register(UserBase, UserBaseAdmin)
-

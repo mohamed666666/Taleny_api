@@ -30,6 +30,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     def update(self, post, validated_data):
         attachments_data = validated_data.pop('attachments', [])
+        
         post.content = validated_data.get('content', post.content)
         # Remove old attachments
         Post_attachement.objects.filter(post=post).delete()

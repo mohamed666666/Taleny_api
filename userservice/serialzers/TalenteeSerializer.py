@@ -20,15 +20,15 @@ class TalenteeRegistrationSerializer(serializers.ModelSerializer):
         fields = [ 'user','talent_id']
 
     def create(self, validated_data):
+        talent = get_talent_by_id(validated_data.pop('talent_id'))
+        if talent is None:
+            raise serializers.ValidationError({"detail": "No valid Talent found."})
         user_data = validated_data.pop('user')
         
         user_serializer = UserRegistrationSerializer(data=user_data, context=self.context)
         user_serializer.is_valid(raise_exception=True)
         user = user_serializer.save()
-
-        talent = get_talent_by_id(validated_data.pop('talent_id'))
-        if talent is None:
-            raise serializers.ValidationError({"detail": "No valid Talent found."})
+        
 
         talentee_profile = Talentee.objects.create(user=user, talent=talent)
         return talentee_profile

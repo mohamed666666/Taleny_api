@@ -7,8 +7,22 @@ class SkillSerializer(serializers.ModelSerializer):
         model = Skill
         fields = ['id', 'name', 'skill_desc']
     
+    def update(self,skill_instance,validated_data):
+        
+        attachments_data = validated_data.pop('attachments', [])
+        # Update other skill fields
+        skill_instance.name = validated_data.get('name', skill_instance.name)
+        skill_instance.skill_desc = validated_data.get('skill_desc', skill_instance.skill_desc)
 
+        # Handle attachments: delete old and create new ones
+        old_attachments = Skill_attachments.objects.filter(skill=skill_instance)
+        old_attachments.delete()
+        for file in attachments_data:
+            Skill_attachments.objects.create(skill=skill_instance, uri=file)
 
+        skill_instance.save()
+        return skill_instance
+        
 # Serializer for the Skill_attachments model
 class SkillAttachmentsSerializer(serializers.ModelSerializer):
     # Nested serializer to show skill details

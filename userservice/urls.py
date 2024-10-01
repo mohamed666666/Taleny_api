@@ -4,11 +4,23 @@ from .views.TalenteeViews import TalenteeRegistrationView
 from .views.TalentView import TalentView
 from .views.InvestgatorViews import InvestgatorRegistrationView
 from .views.LoginView import CustomTokenObtainPairView
-from .views.SkillViews import CreateSkillView,TalnenteeSkillsView,TalnenteeSkillsViewByID
-from .views.FollowViews import (FollowCreateView,FollowDeleteView,FollowersToCurrentUserView,
-                               AcceptFollowView,usersFollowedByCurrentUserView )
+
+#skill 
+from .views.SkillViews import (CreateSkillView,
+                               TalnenteeSkillsView,
+                               TalnenteeSkillsViewByID,
+                               UpdateSkillView,
+                               DeleteSkillView)
+#follow viwes 
+from .views.FollowViews import (FollowCreateView,
+                                FollowDeleteView,FollowersToCurrentUserView,
+                               AcceptFollowView,usersFollowedByCurrentUserView ,
+                               FollowerRequestsToCurrentUserView
+                               )
+#inersts 
 from .views.InterstsViews import (Get_allInterstsView,SelectInterestView,
                                  GetCurrentUserInterestsView  ,GetUserInterestsByIDView)
+
 from .views.AdminViews import ContactRequestCreateView,ContactRequestListView
 from .views.Usersviews import UsersOrderByInterstsView
 from .views.ProfileViews import UserProflieByid,UpdateUserProflie
@@ -32,15 +44,18 @@ urlpatterns = [
     #investgator
     path('register/Investgator/', InvestgatorRegistrationView.as_view(), name='register-Investgator'),
     # skill crud
-    path('addskill/',CreateSkillView.as_view(),name='add_skill'),
+    path('talenteeskills/',CreateSkillView.as_view(),name='add_skill'),
     path('talenteeskills/',TalnenteeSkillsView.as_view(),name='get_skills'),
-    path('talenteeskills/<int:user_id>/',TalnenteeSkillsViewByID.as_view(),name='get_skills_byid'),
+    path('talenteeskills/<int:user_id>/',TalnenteeSkillsViewByID.as_view(),name='get_skills_byusr-id'),
+    path('talenteeskills/update/<int:skill_id>/',UpdateSkillView.as_view(),name='update_skilldata_by-skill-id'),
+    path('talenteeskills/delete/<int:skill_id>/',DeleteSkillView.as_view(),name='delete_skilldata_by-skill-id'),
     
     
     
     # follow crud
     path('createfollow/',FollowCreateView.as_view(),name='create_follow'),
     path('deletefollow/',FollowDeleteView.as_view(),name='delete_follow'),
+    path('follow_requests/',FollowerRequestsToCurrentUserView.as_view(),name='get_pending_requests'),
     path('followers/',FollowersToCurrentUserView.as_view(),name='get_follows_current_user'),
     path('accept_follow/',AcceptFollowView.as_view(),name='accept_follows_current_user'),
     path('following/',usersFollowedByCurrentUserView.as_view(),name='get_follows_of_current_user'),

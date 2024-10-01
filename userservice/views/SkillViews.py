@@ -24,7 +24,7 @@ class CreateSkillView(APIView):
             'skill_desc': request.data.get('skill.skill_desc')
         }
         attachments = request.FILES.getlist('attachments') 
-        attachments = request.FILES.getlist('attachments')  # Get list of files from request
+        # Get list of files from request
      
         skill_serializer = SkillSerializer(data=skill_data)
         if skill_serializer.is_valid():
@@ -44,6 +44,36 @@ class CreateSkillView(APIView):
         return Response(skill_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+class UpdateSkillView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensure the user is authenticated
+    parser_classes = [MultiPartParser, FormParser]
+    
+    def put(self, request,skill_id):
+        # Get the authenticated user and find their Talentee profile
+        user = request.user
+        talentee = get_object_or_404(Talentee, user=user)
+        # Fetch the skill instance
+        skill = get_object_or_404(Skill, id=skill_id)
+        # Extract skill data from the request
+        attachments = request.FILES.getlist('attachments')  # Get list of files from request
+        serializer = SkillSerializer(skill, data=request.data, partial=True)
+        if serializer.is_valid():
+            # Use serializer's update method
+            serializer.update(skill, validated_data=serializer.validated_data)
+            return Response(serializer.data, status=200)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class DeleteSkillView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def delete(self,request,skill_id):
+        talentee= get_object_or_404(Talentee, user=request.user)
+        skill = get_object_or_404(Skill, id=skill_id)
+        skill.delete()
+        return Response(status=200)
+        
 
 
 

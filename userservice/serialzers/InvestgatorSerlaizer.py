@@ -13,12 +13,10 @@ class InvesgatorRegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        
         # Pass the context from the parent serializer to the nested serializer
         user_serializer = UserRegistrationSerializer(data=user_data, context=self.context)
         user_serializer.is_valid(raise_exception=True)
         user = user_serializer.save()
-        
         # Create Investigator instance
         investgator = Investgator.objects.create(
             user=user,
