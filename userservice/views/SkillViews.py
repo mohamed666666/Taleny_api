@@ -102,3 +102,19 @@ class TalnenteeSkillsViewByID(APIView):
         # Serialize the skilled_in instances with related skills and attachments
         serializer = SkilledInSerializer(skilled_at, many=True)
         return Response(serializer.data)
+    
+    
+class SkillByID(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, skill_id):
+        user = request.user
+        talentee = get_object_or_404(Talentee, user=user)
+        # Retrieve all skills linked to the Talentee via the skilled_in model
+        skill = get_object_or_404(Skill, id=skill_id)
+        skilled_at = skilled_in.objects.filter(talentee=talentee, skill=skill)
+       
+        
+        # Serialize the skilled_in instances with related skills and attachments
+        serializer = SkilledInSerializer(skilled_at, many=True)  # many=True to handle a QuerySet
+        return Response(serializer.data)
