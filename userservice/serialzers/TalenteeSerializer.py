@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from .BaseUserSerlaizer import UserRegistrationSerializer
 from ..models.talent import Talentee, Talent
+from fcm_django.models import FCMDevice
 
 def get_talent_by_id(id):
     try:
@@ -21,6 +22,7 @@ class TalenteeRegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         talent = get_talent_by_id(validated_data.pop('talent_id'))
+        
         if talent is None:
             raise serializers.ValidationError({"detail": "No valid Talent found."})
         user_data = validated_data.pop('user')

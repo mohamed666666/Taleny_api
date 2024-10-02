@@ -2,10 +2,12 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from ..models.talent import Talentee
 from ..models.investgator import Investgator
-from .identificationsSerlaizer import IdentifcationsSerlaizer
+from rest_framework import serializers
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    RegisterationFcmToken = serializers.CharField(write_only=True,required=False)
+    
     @classmethod
     def get_token(cls, user):
         # Create the token object using the default implementation
@@ -22,7 +24,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['government'] = user.government
         token['area'] = user.area
         token['profile_image'] = user.profile_image.url if user.profile_image else None
-
+        
         # Check the user's role explicitly using exists()
         if Talentee.objects.filter(user=user).exists():
             token['role'] = 'Talentee'

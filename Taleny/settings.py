@@ -10,6 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import firebase_admin
+from firebase_admin import credentials
+
+
 from pathlib import Path
 from datetime import timedelta
 
@@ -29,7 +33,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*','193.203.190.106']
 
 
-# Application definition
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -39,12 +43,21 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'notificationservice',
+    'fcm_django',
     'blogservice',
     'userservice',
     'rest_framework',
     "corsheaders",
     'rest_framework.authtoken' 
 ]
+
+#Fcm 
+FCM_DJANGO_FCMDEVICE_MODEL = "notificationservice.CustomDevice"
+
+# Application definition 
+cred = credentials.Certificate("/home/v/Work/Addicta/Taleny/notificationservice/taleny-ce65c-firebase-adminsdk-sxk9s-c646451859.json")
+firebase_admin.initialize_app(cred)
+
 
 AUTH_USER_MODEL = 'userservice.UserBase'
 AUTHENTICATION_BACKENDS = [
