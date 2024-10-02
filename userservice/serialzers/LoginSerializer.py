@@ -29,7 +29,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         elif Investgator.objects.filter(user=user).exists():
             token['role'] = 'Investigator'
         else:
-            token['role'] = 'Unknown'
+            token['role'] = 'Admin'
+            
 
         return token
 

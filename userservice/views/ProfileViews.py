@@ -12,9 +12,9 @@ from rest_framework.parsers import MultiPartParser, FormParser
 class UserProflieByid(APIView):
     permission_classes = [IsAuthenticated]  
 
-    def get(self, request, user_id):
+    def get(self, request, user_name):
         try:
-            user = UserBase.objects.get(id=user_id)
+            user = UserBase.objects.get(user_name=user_name)
             serializer = UserSerializer(user)
             return Response(serializer.data)
         except UserBase.DoesNotExist:

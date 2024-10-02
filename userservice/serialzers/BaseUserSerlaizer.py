@@ -63,18 +63,21 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserBase
         fields = [
+            'id',
+            'user_name',
             'full_name',
             'title',
             'profile_image',
             'role',
         ]
-        read_only_fields = ['id']
+        read_only_fields = ['user_name','id']
     
     def get_role(self, obj):
         if hasattr(obj, 'talentee'):
             return 'Talentee'
         elif hasattr(obj, 'investgator'):
             return 'Investigator'
+        
         return 'Admin'  # In case the user is neither
 
 

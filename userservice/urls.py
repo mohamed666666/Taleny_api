@@ -62,7 +62,7 @@ urlpatterns = [
     path('accept_follow/',AcceptFollowView.as_view(),name='accept_follows_current_user'),
     path('following/',usersFollowedByCurrentUserView.as_view(),name='get_follows_of_current_user'),
     #user profile  
-    path('user_profile/<int:user_id>/',UserProflieByid.as_view(),name='get_user_data_by_id'),
+    path('user_profile/<str:user_name>/',UserProflieByid.as_view(),name='get_user_data_by_id'),
     path('user_profile/update/',UpdateUserProflie.as_view(),name='update_user_data'),
     
     # intersts 
