@@ -3,10 +3,8 @@ from rest_framework import serializers
 from ..models.Baseuser import UserBase
 from ..models import Identifications  # Import Identifications model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from fcm_django.models import FCMDevice
-
-
-
+from notificationservice.models import CustomDevice
+from ..models.Cover import CoverPhoto
         
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -50,11 +48,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         # create fcm token 
-        fcm=FCMDevice(user=user,token=validated_data['RegisterationFcmToken'])
+        cover=CoverPhoto.objects.create(user=user)
+        cover.save()
+        fcm=CustomDevice(user=user,token=validated_data['RegisterationFcmToken'])
         fcm.save()
         # Save identification files
         for identification_file in identifications_data:
-            print(identification_file)
             Identifications.objects.create(user=user, url=identification_file)
         
         return user
@@ -84,23 +83,3 @@ class UserSerializer(serializers.ModelSerializer):
         
         return 'Admin'  # In case the user is neither
 
-
-
-
-class UserUpdateSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = UserBase
-        fields = [
-            'id',
-            'user_name',
-            'full_name',
-            'age',
-            'government',
-            'area',
-            'about',
-            'phone_number',
-            'title',
-            'profile_image',
-        ]
-        read_only_fields = ['id']

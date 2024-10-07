@@ -1,12 +1,13 @@
 from rest_framework import serializers
 from django.contrib.contenttypes.models import ContentType
 from ..models.Like import Like
-
+from userservice.serialzers.BaseUserSerlaizer import UserSerializer
 
 
 
 class LikeSerializer(serializers.ModelSerializer):
     # Fields to accept the model type (Post/Comment) and the specific object (ID)
+    created_by=UserSerializer()
     content_type = serializers.SlugRelatedField(
         slug_field='model', queryset=ContentType.objects.all()
     )
@@ -14,7 +15,7 @@ class LikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Like
-        fields = ['created_at', 'content_type', 'object_id']
+        fields = ['id','created_at', 'created_by','content_type', 'object_id',]
 
     def validate(self, data):
         user = self.context['request'].user
@@ -25,7 +26,7 @@ class LikeSerializer(serializers.ModelSerializer):
             content_object = model.objects.get(id=data['object_id'])
         except model.DoesNotExist:
             raise serializers.ValidationError(f"The {model.__name__} you're trying to like does not exist.")
-        
+        print(type(data['content_type']))
         # Check if the like already exists
         if Like.objects.filter(
             created_by=user,

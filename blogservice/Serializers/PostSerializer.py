@@ -1,8 +1,12 @@
 from ..models.Post import Post ,Post_attachement
 from rest_framework import serializers
 from userservice.serialzers.BaseUserSerlaizer import UserSerializer
-from .CommentSerializer import CommentSerializer
-        
+from userservice.models.follow import Follow
+from ..models.Like import Like
+from ..models.Comment import Comment
+from ..models.share import Share
+from django.contrib.contenttypes.models import ContentType
+
 
 class PostAttachmentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,14 +23,17 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ['id', 'content', 'attachments']
 
-    def create(self, validated_data):
+    def create(self, validated_data): 
         attachments_data = validated_data.pop('attachments', [])
         post = Post.objects.create(**validated_data)
         # Save each attachment
+        
         for attachment in attachments_data:
             if attachment:
                 Post_attachement.objects.create(post=post, attachment_file=attachment)
-        return post
+            
+        data={'post':post,'attachements':PostAttachmentSerializer(Post_attachement.objects.filter(post=post),many=True)}
+        return data
 
     def update(self, post, validated_data):
         attachments_data = validated_data.pop('attachments', [])
@@ -46,14 +53,46 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 
+
     
 
 class RetrivePostSerializer(serializers.ModelSerializer):
     created_by = UserSerializer()  # Using the existing UserSerializer for user details
     attachments = PostAttachmentSerializer(many=True, read_only=True, source='post')  # Nested serializer for attachments
-    comments = CommentSerializer(many=True, read_only=True, source='on_post')  # Nested serializer for comments
-
+    likes_count=serializers.SerializerMethodField()
+    comments_count=serializers.SerializerMethodField()
+    following=serializers.SerializerMethodField()
+    shares_count=serializers.SerializerMethodField()
     class Meta:
         model = Post
-        fields = ['id','created_at',  'content','created_by', 'attachments', 'comments' ]
+        fields = ['id','created_at',  'content','created_by', 'attachments',
+                  'comments_count' ,'likes_count','following','shares_count']
         read_only_fields = ['id', 'created_at']
+        
+    def get_likes_count(self,object):
+        
+        return(Like.objects.filter(content_type=ContentType.objects.get(model='post') ,object_id=object.id).count())
+        
+    
+    def get_comments_count(self,object):
+        return(Comment.objects.filter(on_post=object).count())
+    
+   
+    def get_following(self, object):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            try:
+                # Check if there's a follow relationship between request.user and the post creator
+                follow = Follow.objects.get(follow_from=request.user, follow_to=object.created_by)
+                
+                # Return status based on the follow status
+                if follow.status:
+                    return "following"
+                else:
+                    return "pending"
+            except Follow.DoesNotExist:
+                return "notfollowing"
+        return "notfollowing"
+    
+    def get_shares_count(self,object):
+        return(Share.objects.filter(post=object).count())

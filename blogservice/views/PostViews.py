@@ -4,21 +4,24 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated 
-
 from ..models.Post import Post ,Post_attachement
-from ..models.Like import Like
-from ..models.Comment import Comment
-from django.contrib.contenttypes.models import ContentType
-from ..Serializers.LikeSerializer import LikeSerializer
-
 from ..Serializers.PostSerializer import PostSerializer ,RetrivePostSerializer
-from ..Serializers.PostSerializer import PostAttachmentSerializer
-from userservice.serialzers.BaseUserSerlaizer import UserSerializer
-
+from rest_framework.pagination import PageNumberPagination
+from userservice.models.Baseuser import UserBase
 
 class GetAllPostsView(APIView):
     permission_classes = [IsAuthenticated] 
-    
+
+    def get(self, request):
+        posts = Post.objects.all().order_by('-created_at')
+
+        # Apply pagination
+        paginator = PageNumberPagination()
+        paginator.page_size = 3  # You can also set this dynamically
+        paginated_posts = paginator.paginate_queryset(posts, request)
+
+        serializer = RetrivePostSerializer(paginated_posts, many=True)
+        return paginator.get_paginated_response(serializer.data)
     
 
 
@@ -39,21 +42,9 @@ class CreatePostView(APIView):
 class RetrivePost_by_id(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, post_id):
-        # Fetch the post object
         post = get_object_or_404(Post, id=post_id)
-        # Fetch likes related to the post
-        likes = Like.objects.filter(
-            content_type=ContentType.objects.get_for_model(Post), 
-            object_id=post.id
-        )
-        print(len(likes))
-        
-        # Serialize the post
         post_serializer = RetrivePostSerializer(post)
-        # Add likes to the serialized data
-        data = post_serializer.data
-        data['likes_on_post'] = LikeSerializer(likes, many=True).data
-        return Response(data, status=200)
+        return Response(post_serializer.data, status=200)
         
         
         
@@ -88,4 +79,38 @@ class DeletePost_by_id(APIView):
         attachments.delete()
         
         return Response( status=200)
-        
+    
+    
+
+
+
+class GetPostsOfCurrentUserView(APIView):
+    permission_classes = [IsAuthenticated] 
+
+    def get(self, request):
+        posts = Post.objects.filter(created_by=request.user.id)
+
+        # Apply pagination
+        paginator = PageNumberPagination()
+        paginator.page_size = 3  # You can also set this dynamically
+        paginated_posts = paginator.paginate_queryset(posts, request)
+
+        serializer = RetrivePostSerializer(paginated_posts, many=True)
+        return paginator.get_paginated_response(serializer.data)
+    
+
+class GetPostsOfUserByIdView(APIView):
+    permission_classes = [IsAuthenticated] 
+
+    def get(self, request,user_name):
+        user=UserBase.objects.get(user_name=user_name)
+        posts = Post.objects.filter(created_by=user.id)
+
+        # Apply pagination
+        paginator = PageNumberPagination()
+        paginator.page_size = 3  # You can also set this dynamically
+        paginated_posts = paginator.paginate_queryset(posts, request)
+
+        serializer = RetrivePostSerializer(paginated_posts, many=True)
+        return paginator.get_paginated_response(serializer.data)
+    

@@ -24,7 +24,9 @@ from .views.InterstsViews import (Get_allInterstsView,SelectInterestView,
 
 from .views.AdminViews import ContactRequestCreateView,ContactRequestListView
 from .views.Usersviews import UsersOrderByInterstsView
-from .views.ProfileViews import UserProflieByid,UpdateUserProflie
+
+from .views.ProfileViews import( UserProflieByid,CurrentUserProflie,
+                                UpdateUserProflie)
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -61,9 +63,12 @@ urlpatterns = [
     path('followers/',FollowersToCurrentUserView.as_view(),name='get_follows_current_user'),
     path('accept_follow/',AcceptFollowView.as_view(),name='accept_follows_current_user'),
     path('following/',usersFollowedByCurrentUserView.as_view(),name='get_follows_of_current_user'),
+    
     #user profile  
-    path('user_profile/<str:user_name>/',UserProflieByid.as_view(),name='get_user_data_by_id'),
-    path('user_profile/update/',UpdateUserProflie.as_view(),name='update_user_data'),
+    path('user_profile/<str:user_name>/',UserProflieByid.as_view(),name='get_user_data_by_username'),
+    path('user_profile/update/<str:user_name>/',UpdateUserProflie.as_view(),name='update_user_data-by-username'),
+    path('user_profile/',CurrentUserProflie.as_view(),name='current_user_data'),
+    
     
     # intersts 
     path('all_intersts/',Get_allInterstsView.as_view(),name='get_all_intersts'),

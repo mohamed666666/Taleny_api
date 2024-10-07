@@ -55,7 +55,7 @@ INSTALLED_APPS = [
 FCM_DJANGO_FCMDEVICE_MODEL = "notificationservice.CustomDevice"
 
 # Application definition 
-cred = credentials.Certificate("/home/v/Work/Addicta/Taleny/notificationservice/taleny-ce65c-firebase-adminsdk-sxk9s-c646451859.json")
+cred = credentials.Certificate(BASE_DIR / "notificationservice/taleny-ce65c-firebase-adminsdk-sxk9s-c646451859.json")
 firebase_admin.initialize_app(cred)
 
 
@@ -77,7 +77,8 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.JSONParser',
         'rest_framework.parsers.FormParser',
     'rest_framework.parsers.MultiPartParser',
-    ]
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
 }
 
 SIMPLE_JWT = {

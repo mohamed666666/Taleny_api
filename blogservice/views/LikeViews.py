@@ -4,6 +4,13 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.contenttypes.models import ContentType
 from ..Serializers.LikeSerializer import LikeSerializer
 from ..models import Like
+from rest_framework import serializers
+from rest_framework.views import APIView
+from ..models.Post import Post
+from ..models.Comment import  Comment
+from django.shortcuts import get_object_or_404
+
+
 
 class LikeCreateView(generics.CreateAPIView):
     serializer_class = LikeSerializer
@@ -36,3 +43,22 @@ class LikeDeleteView(generics.DestroyAPIView):
         
         return like
 
+
+class GetLikesOnPost(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self,request,post_id):
+        post = get_object_or_404(Post, id=post_id)
+        likes=Like.objects.filter(content_type=ContentType.objects.get(model='post') ,object_id=post.id)
+        serializer=LikeSerializer(likes,many=True)
+        return Response(serializer.data,status=200)
+    
+
+class GetLikesOnComment(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self,request,comment_id):
+        comment = get_object_or_404(Comment, id=comment_id)
+        likes=Like.objects.filter(content_type=ContentType.objects.get(model='comment') ,object_id=comment.id)
+        serializer=LikeSerializer(likes,many=True)
+        return Response(serializer.data,status=200)

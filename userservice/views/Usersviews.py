@@ -6,27 +6,35 @@ from django.db.models import Count, Q
 from ..models.Baseuser import UserBase
 from ..models.inetrsts import Intersting_in
 from ..serialzers.BaseUserSerlaizer import UserSerializer
-
+from rest_framework.pagination import PageNumberPagination
+    
+    
 
 class UsersOrderByInterstsView(APIView):
     permission_classes = [IsAuthenticated]
 
-
     def get(self, request):
         # Step 1: Get the interests of the logged-in user
         user_interests = Intersting_in.objects.filter(user=request.user).values_list('interst', flat=True)
-        # Step 2: Get all users and annotate with shared_interests count (including 0 for no shared interests)
+        
+        # Step 2: Get all users (excluding Admins) and annotate with shared_interests count
         users_with_shared_interests = (
             UserBase.objects
             .exclude(id=request.user.id)  # Exclude the request.user
+            .filter(Q(talentee__isnull=False) | Q(investgator__isnull=False))  # Exclude Admins
             .annotate(
                 shared_interests=Count('intersting_in__interst', filter=Q(intersting_in__interst__in=user_interests))
             )
             .order_by('-shared_interests')  # Order by number of shared interests
         )
 
-        # Step 3: Serialize the data
-        serializer = UserSerializer(users_with_shared_interests, many=True)
+        # Step 3: Apply pagination
+        paginator = PageNumberPagination()
+        paginator.page_size = 30  # You can adjust the page size here
+        paginated_users = paginator.paginate_queryset(users_with_shared_interests, request)
 
-        # Step 4: Return the response
-        return Response(serializer.data)
+        # Step 4: Serialize the paginated data
+        serializer = UserSerializer(paginated_users, many=True)
+        
+        # Step 5: Return paginated response
+        return paginator.get_paginated_response(serializer.data)

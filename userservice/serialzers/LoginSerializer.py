@@ -3,6 +3,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from ..models.talent import Talentee
 from ..models.investgator import Investgator
 from rest_framework import serializers
+from notificationservice.models import CustomDevice
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -39,10 +40,22 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
 
+        # Extract the FCM token from the validated data
+        fcm_token = attrs.get('RegisterationFcmToken', None)
+
+        # If an FCM token is provided, create or update the CustomDevice object
+        if fcm_token:
+            fcm, created = CustomDevice.objects.get_or_create(user=self.user, defaults={'token': fcm_token})
+            if not created:
+                # If the device already exists, update the token
+                fcm.registration_id = fcm_token
+                
+                fcm.save()
+                
+
         # Get the access token with custom claims
         access = self.get_token(self.user).access_token
 
         # Convert the access token to a string to include in the response
         data['access'] = str(access)
-
         return data

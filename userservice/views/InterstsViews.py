@@ -5,6 +5,7 @@ from ..models.inetrsts import Interst,Intersting_in
 from ..serialzers.InterestSerializer import InterstSerlaizer
 from rest_framework.permissions import IsAuthenticated ,AllowAny
 from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
 
 
 class Get_allInterstsView(APIView):
@@ -38,6 +39,16 @@ class SelectInterestView(APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=400)
         
+    def delete(self,request):
+        user = request.user  # Get the authenticated user
+        interest_id = request.data.get('interest_id')
+        interst=get_object_or_404(Interst,id=interest_id)
+        intersting_in=Intersting_in.objects.filter(user=user,interst=interst)
+        intersting_in.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+        
+    
+        
         
         
 class GetCurrentUserInterestsView(APIView):
@@ -52,6 +63,7 @@ class GetCurrentUserInterestsView(APIView):
         # Serialize the list of Interst objects
         serializer = InterstSerlaizer(interests, many=True)
         return Response(serializer.data, status=200)
+
 
 
 
