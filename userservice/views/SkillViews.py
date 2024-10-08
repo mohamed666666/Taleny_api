@@ -66,11 +66,15 @@ class UpdateSkillView(APIView):
         # Fetch the skill instance
         skill = get_object_or_404(Skill, id=skill_id)
         # Extract skill data from the request
+        skill_owner=skilled_in.objects.filter(skill=skill).first().talentee
+        if talentee !=skill_owner:
+            return Response({'details':'you  not allowed to update this skill '}, status=403)
+        
         attachments = request.FILES.getlist('attachments')  # Get list of files from request
         serializer = SkillSerializer(skill, data=request.data, partial=True)
         if serializer.is_valid():
             # Use serializer's update method
-            serializer.update(skill, validated_data=serializer.validated_data)
+            serializer.update(skill, attachments=attachments,validated_data=serializer.validated_data)
             return Response(serializer.data, status=200)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

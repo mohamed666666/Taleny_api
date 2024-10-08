@@ -25,6 +25,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data): 
         attachments_data = validated_data.pop('attachments', [])
+        
         post = Post.objects.create(**validated_data)
         # Save each attachment
         
@@ -32,8 +33,7 @@ class PostSerializer(serializers.ModelSerializer):
             if attachment:
                 Post_attachement.objects.create(post=post, attachment_file=attachment)
             
-        data={'post':post,'attachements':PostAttachmentSerializer(Post_attachement.objects.filter(post=post),many=True)}
-        return data
+        return post
 
     def update(self, post, validated_data):
         attachments_data = validated_data.pop('attachments', [])
@@ -48,6 +48,22 @@ class PostSerializer(serializers.ModelSerializer):
         post.save()
 
         return post
+    
+    def to_representation(self, instance):
+        """
+        Customize the serialized output.
+        """
+        representation = super().to_representation(instance)
+        # Add attachments in the representation
+        attachments = Post_attachement.objects.filter(post=instance)
+        representation['attachments'] = [
+            {
+                'id': attachment.id,
+                'file_url': attachment.attachment_file.url
+            }
+            for attachment in attachments
+        ]
+        return representation
 
 
 

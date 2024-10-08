@@ -29,14 +29,19 @@ class CreatePostView(APIView):
     permission_classes = [IsAuthenticated]  # Ensure the user is authenticated
     parser_classes = [MultiPartParser, FormParser]  # Accept form-data and file uploads
 
-    def post(self, request, *args, **kwargs): 
+    def post(self, request): 
         serializer = PostSerializer(data=request.data,partial=True)
+        
         
         if serializer.is_valid():
             # Set the logged-in user as the post creator
             serializer.save(created_by=request.user)
+            
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    
     
         
 class RetrivePost_by_id(APIView):
