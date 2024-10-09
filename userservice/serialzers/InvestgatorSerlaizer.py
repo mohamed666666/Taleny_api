@@ -1,7 +1,9 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
-from .BaseUserSerlaizer import UserRegistrationSerializer
+from .BaseUserSerlaizer import UserRegistrationSerializer,UserSerializer
 from ..models.investgator import Investgator
+
+
 
 
 class InvesgatorRegistrationSerializer(serializers.ModelSerializer):
@@ -25,3 +27,11 @@ class InvesgatorRegistrationSerializer(serializers.ModelSerializer):
         )
 
         return investgator
+    
+    
+
+class InvestgatorRetriveSerializer(serializers.ModelSerializer):
+    user=UserSerializer()
+    class Meta:
+        model=Investgator
+        fields = ['user', 'cr', 'company_name']

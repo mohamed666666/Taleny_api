@@ -4,6 +4,7 @@ from rest_framework import serializers
 from ..models.admin import ContactRequest
 
 class ContactRequestSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = ContactRequest
         fields = ['id', 'request_creator', 'talentee_requested']

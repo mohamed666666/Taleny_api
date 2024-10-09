@@ -7,7 +7,8 @@ from ..models.Baseuser import UserBase
 from ..models.inetrsts import Intersting_in
 from ..serialzers.BaseUserSerlaizer import UserSerializer
 from rest_framework.pagination import PageNumberPagination
-    
+from rest_framework import generics
+from rest_framework import status
     
 
 class UsersOrderByInterstsView(APIView):
@@ -42,3 +43,29 @@ class UsersOrderByInterstsView(APIView):
 
 
 
+class UserSearchAPIView(generics.GenericAPIView):
+    serializer_class = UserSerializer
+
+    def get(self, request, *args, **kwargs):
+        query = request.query_params.get('q', None)
+        
+        # Search logic
+        if query:
+            users = UserBase.objects.filter(
+                Q(user_name__icontains=query) | 
+                Q(full_name__icontains=query) |
+                Q(title__icontains=query)   
+                
+            ).exclude(Q(theadmin__isnull=False))
+           
+        else:
+            users = UserBase.objects.all().exclude(Q(theadmin__isnull=False))
+
+        # Pagination
+        paginator = PageNumberPagination()
+        paginator.page_size = 30  # Set page size before paginate_queryset
+        paginated_users = paginator.paginate_queryset(users, request)
+
+        # Serialize and return paginated data
+        serializer = self.get_serializer(paginated_users, many=True)
+        return paginator.get_paginated_response(serializer.data)

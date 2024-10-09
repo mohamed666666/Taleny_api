@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .BaseUserSerlaizer import UserRegistrationSerializer
 from ..models.talent import Talentee, Talent
 from fcm_django.models import FCMDevice
+from .BaseUserSerlaizer import UserSerializer
 
 def get_talent_by_id(id):
     try:
@@ -35,3 +36,10 @@ class TalenteeRegistrationSerializer(serializers.ModelSerializer):
         talentee_profile = Talentee.objects.create(user=user, talent=talent)
         return talentee_profile
     
+
+
+class TalenteeRetriveSerializer(serializers.ModelSerializer):
+    user=UserSerializer()
+    class Meta:
+        model=Talentee
+        fields = [ 'user','talent_id']

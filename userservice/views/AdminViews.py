@@ -5,9 +5,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
 from ..models.admin import ContactRequest ,TheAdmin
 from ..models.talent import Talentee
+from ..models.investgator import Investgator
 from ..serialzers.ContactRequestSerializer import ContactRequestSerializer
+from ..serialzers.TalenteeSerializer import TalenteeRetriveSerializer
+from ..serialzers.InvestgatorSerlaizer import InvestgatorRetriveSerializer
 from rest_framework.views import APIView
 from rest_framework.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
 
 
 class ContactRequestCreateView(generics.CreateAPIView):
@@ -37,13 +41,54 @@ class ContactRequestListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = request.user
-        # Check if the logged-in user is an admin
-        try:
-            admin = TheAdmin.objects.get(user=user)
-        except TheAdmin.DoesNotExist:
-            raise PermissionDenied("You do not have permission to view this data.")
+        adminpermssion(request.user)
         # If the user is an admin, return all contact requests
         contact_requests = ContactRequest.objects.all()
         serializer = ContactRequestSerializer(contact_requests, many=True)
         return Response(serializer.data)
+
+
+
+class GetAllTalenteesViews(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self,request):
+        adminpermssion(request.user)
+        talentees=Talentee.objects.all()
+        serializer=TalenteeRetriveSerializer(talentees,many=True)
+        return Response(serializer.data,status=200)
+    
+
+class GetTalenteeByIdViews(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self,request,user_id):
+        adminpermssion(request.user)
+        talentee=get_object_or_404(Talentee,pk=user_id)
+        serializer=TalenteeRetriveSerializer(talentee)
+        return Response(serializer.data,status=200)
+    
+    
+class GetAllInvestsViews(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self,request):
+        adminpermssion(request.user)
+        invests=Investgator.objects.all()
+        serializer=InvestgatorRetriveSerializer(invests,many=True)
+        return Response(serializer.data,status=200)
+    
+class GetInvestByIdViews(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self,request,user_id):
+        adminpermssion(request.user)
+        invest=get_object_or_404(Investgator,pk=user_id)
+        serializer=InvestgatorRetriveSerializer(invest)
+        return Response(serializer.data,status=200)
+
+    
+    
+def adminpermssion(user):
+        try:
+            admin = TheAdmin.objects.get(user=user)
+        except TheAdmin.DoesNotExist:
+            raise PermissionDenied("You do not have permission to view this data.")

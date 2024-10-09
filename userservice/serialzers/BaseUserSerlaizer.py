@@ -80,6 +80,8 @@ class UserSerializer(serializers.ModelSerializer):
             return 'Talentee'
         elif hasattr(obj, 'investgator'):
             return 'Investigator'
+        elif hasattr(obj, 'theadmin'):
+            return 'Admin'
         
-        return 'Admin'  # In case the user is neither
+        return 'Un-known'  # In case the user is neither
 

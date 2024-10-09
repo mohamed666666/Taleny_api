@@ -22,9 +22,13 @@ from .views.FollowViews import (FollowCreateView,
 from .views.InterstsViews import (Get_allInterstsView,SelectInterestView,
                                  GetCurrentUserInterestsView  ,GetUserInterestsByIDView)
 
-from .views.AdminViews import ContactRequestCreateView,ContactRequestListView
-from .views.Usersviews import UsersOrderByInterstsView
-
+from .views.AdminViews import (ContactRequestCreateView,GetTalenteeByIdViews,
+                               ContactRequestListView,GetInvestByIdViews,
+                               GetAllTalenteesViews, GetAllInvestsViews,
+                               )
+from .views.Usersviews import (UsersOrderByInterstsView, 
+                               UserSearchAPIView
+)
 from .views.ProfileViews import( UserProflieByid,CurrentUserProflie,
                                 UpdateUserProflie)
 
@@ -39,7 +43,11 @@ urlpatterns = [
     #adimn 
     path('contactrequest/<int:talentee_id>/', ContactRequestCreateView.as_view(), name='create-contact-request'),
     path('contactrequests/', ContactRequestListView.as_view(), name='get-all-contact-requests-for-admin'),
-    
+    path('all_telentees/', GetAllTalenteesViews.as_view(), name='get-all-talentees-for-admin'),
+    path('all_investgators/', GetAllInvestsViews.as_view(), name='get-all-investgators-for-admin'),
+    path('telentee/<int:user_id>/', GetTalenteeByIdViews.as_view(), name='get-talentee-by-id-admin-for-admin'),
+    path('Investgator/<int:user_id>/', GetInvestByIdViews.as_view(), name='get-Investgator-by-id-for-admin'),
+   
     #Talentee
     path('register/Talentee/', TalenteeRegistrationView.as_view(), name='register-Talentee'),
     #talent views
@@ -69,6 +77,9 @@ urlpatterns = [
     path('user_profile/update/<str:user_name>/',UpdateUserProflie.as_view(),name='update_user_data-by-username'),
     path('user_profile/',CurrentUserProflie.as_view(),name='current_user_data'),
     
+    
+    #search for users 
+    path('search/',UserSearchAPIView.as_view(),name='current_user_data'),
     
     # intersts 
     path('all_intersts/',Get_allInterstsView.as_view(),name='get_all_intersts'),
