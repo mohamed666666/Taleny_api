@@ -11,37 +11,69 @@ from ..models.Comment import  Comment
 from django.shortcuts import get_object_or_404
 
 
-
-class LikeCreateView(generics.CreateAPIView):
-    serializer_class = LikeSerializer
+class LikeCreateAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
+    def post(self, request, *args, **kwargs):
+        serializer = LikeSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            like = serializer.save()
+            return Response(
+                {"message": "Like created successfully", "like": LikeSerializer(like).data},
+                status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class LikeDeleteView(generics.DestroyAPIView):
+class LikeDeleteAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get_object(self):
-        # Extract content_type and object_id from query params or request body
-        content_type = self.request.query_params.get('content_type')
-        object_id = self.request.query_params.get('object_id')
-
+    def delete(self, request, *args, **kwargs):
+        content_type = request.data.get('content_type')
+        object_id = request.data.get('object_id')
+        
         if not content_type or not object_id:
-            raise serializers.ValidationError("content_type and object_id must be provided.")
+            return Response(
+                {"error": "Both content_type and object_id are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         
-        # Fetch the content type model and like instance
-        content_type_model = ContentType.objects.get(model=content_type)
-        like = Like.objects.filter(
-            created_by=self.request.user,
-            content_type=content_type_model,
-            object_id=object_id
-        ).first()
+        try:
+            # Retrieve the ContentType for the given model
+            content_type_obj = ContentType.objects.get(model=content_type)
+            model = content_type_obj.model_class()
 
-        if like is None:
-            raise serializers.ValidationError("Like not found.")
+            # Ensure the object being unliked exists
+            model.objects.get(id=object_id)
+        except ContentType.DoesNotExist:
+            return Response(
+                {"error": "Invalid content type."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except model.DoesNotExist:
+            return Response(
+                {"error": f"The {content_type} object does not exist."},
+                status=status.HTTP_404_NOT_FOUND
+            )
         
-        return like
+        # Check if the like exists
+        try:
+            like = Like.objects.get(
+                created_by=request.user,
+                content_type=content_type_obj,
+                object_id=object_id
+            )
+        except Like.DoesNotExist:
+            return Response(
+                {"error": "Like not found or you did not like this item."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        # Delete the like
+        like.delete()
+        return Response(
+            {"message": "Like deleted successfully."},
+            status=status.HTTP_204_NO_CONTENT
+        )
 
 
 class GetLikesOnPost(APIView):

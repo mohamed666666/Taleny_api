@@ -1,5 +1,5 @@
 from django.urls import path
-from .views.LikeViews import( LikeCreateView ,LikeDeleteView,
+from .views.LikeViews import( LikeCreateAPIView ,LikeDeleteAPIView,
                              GetLikesOnPost,GetLikesOnComment
                              )
 from .views.PostViews import (CreatePostView,RetrivePost_by_id,
@@ -21,8 +21,8 @@ from .views.ShareViews import (ShareListCreateAPIView ,
 
 app_name ='blogservice'
 urlpatterns = [
-    path('like/', LikeCreateView.as_view(), name='like-create'),
-    path('like/delete/', LikeDeleteView.as_view(), name='like-delete'),
+    path('like/', LikeCreateAPIView.as_view(), name='like-create'),
+    path('like/delete/', LikeDeleteAPIView.as_view(), name='like-delete'),
     path('like/post/<int:post_id>/', GetLikesOnPost.as_view(), name='get-likes-on-post-by-post_id'),
     path('like/comment/<int:comment_id>/', GetLikesOnComment.as_view(), name='get-likes-on-comment-by-comment_id'),
     
