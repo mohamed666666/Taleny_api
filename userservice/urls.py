@@ -79,7 +79,7 @@ urlpatterns = [
     
     
     #search for users 
-    path('search/',UserSearchAPIView.as_view(),name='current_user_data'),
+    path('search/',UserSearchAPIView.as_view(),name='serach_by_q parameter_get_user_data'),
     
     # intersts 
     path('all_intersts/',Get_allInterstsView.as_view(),name='get_all_intersts'),
