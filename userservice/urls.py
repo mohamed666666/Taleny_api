@@ -43,7 +43,7 @@ urlpatterns = [
     #adimn 
     path('contactrequest/<int:talentee_id>/', ContactRequestCreateView.as_view(), name='create-contact-request'),
     path('contactrequests/', ContactRequestListView.as_view(), name='get-all-contact-requests-for-admin'),
-    path('contactrequest/<int:request_id>/', ContactRequestByidView.as_view(), name='get-by-id-contact-request'),
+    path('contactrequests/<int:request_id>/', ContactRequestByidView.as_view(), name='get-by-id-contact-request'),
     path('all_telentees/', GetAllTalenteesViews.as_view(), name='get-all-talentees-for-admin'),
     path('all_investgators/', GetAllInvestsViews.as_view(), name='get-all-investgators-for-admin'),
     path('telentee/<int:user_id>/', GetTalenteeByIdViews.as_view(), name='get-talentee-by-id-admin-for-admin'),
