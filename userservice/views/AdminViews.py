@@ -48,6 +48,16 @@ class ContactRequestListView(APIView):
         return Response(serializer.data)
 
 
+class ContactRequestByidView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request,request_id):
+        adminpermssion(request.user)
+        # If the user is an admin, return all contact requests
+        contact_request = ContactRequest.objects.get(pk=request_id)
+        serializer = ContactRequestSerializer(contact_request)
+        return Response(serializer.data)
+
 
 class GetAllTalenteesViews(APIView):
     permission_classes = [IsAuthenticated]

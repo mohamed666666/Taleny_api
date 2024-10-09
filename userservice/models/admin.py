@@ -15,4 +15,6 @@ class ContactRequest(models.Model):
     request_creator=models.ForeignKey(Investgator ,on_delete=models.CASCADE)
     talentee_requested=models.ForeignKey(Talentee,on_delete=models.CASCADE)
     status=models.BooleanField(default=False)
+    created_at= models.DateTimeField(auto_now_add=True)
+    approved_at = models.DateTimeField(auto_now=True)
     
