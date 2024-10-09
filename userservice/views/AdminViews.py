@@ -59,6 +59,19 @@ class ContactRequestByidView(APIView):
         return Response(serializer.data)
 
 
+
+class StatsticsForAdminView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self,request):
+        adminpermssion(request.user)
+        taltentees=Talentee.objects.all().count()
+        invetsgators=Investgator.objects.all().count()
+        contact_requests=ContactRequest.objects.all().count()
+        return Response ({'Talentees_count':taltentees,
+                          'Investgators_count':invetsgators,
+                          'Contact_Requests_count':contact_requests} ,status=200)
+
+
 class GetAllTalenteesViews(APIView):
     permission_classes = [IsAuthenticated]
     def get(self,request):

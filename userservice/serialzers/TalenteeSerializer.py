@@ -2,7 +2,6 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from .BaseUserSerlaizer import UserRegistrationSerializer
 from ..models.talent import Talentee, Talent
-from fcm_django.models import FCMDevice
 from .BaseUserSerlaizer import UserSerializer
 
 def get_talent_by_id(id):

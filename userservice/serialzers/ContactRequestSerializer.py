@@ -4,10 +4,10 @@ from rest_framework import serializers
 from ..models.admin import ContactRequest
 
 class ContactRequestSerializer(serializers.ModelSerializer):
-    
+    status=serializers.SerializerMethodField()
     class Meta:
         model = ContactRequest
-        fields = ['id', 'request_creator', 'talentee_requested']
+        fields = ['id', 'status','created_at','request_creator', 'talentee_requested']
         read_only_fields = ['id', 'request_creator']
         depth = 1 
 
@@ -18,3 +18,7 @@ class ContactRequestSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
+    def get_status(self,instance):
+        if instance.status:
+            return 'Accepted'
+        return 'Pending'

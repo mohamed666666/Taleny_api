@@ -24,7 +24,7 @@ from .views.InterstsViews import (Get_allInterstsView,SelectInterestView,
 from .views.AdminViews import (ContactRequestCreateView,GetTalenteeByIdViews,
                                ContactRequestListView,GetInvestByIdViews,
                                GetAllTalenteesViews, GetAllInvestsViews,
-                               ContactRequestByidView
+                               ContactRequestByidView,StatsticsForAdminView
                                )
 from .views.Usersviews import (UsersOrderByInterstsView, 
                                UserSearchAPIView
@@ -40,6 +40,7 @@ app_name ='userservice'
 urlpatterns = [
     path("login/",CustomTokenObtainPairView.as_view(),name="login"),#get token by username and password 
     path("token/refresh/",TokenRefreshView.as_view(),name="refresh"),
+    
     #adimn 
     path('contactrequest/<int:talentee_id>/', ContactRequestCreateView.as_view(), name='create-contact-request'),
     path('contactrequests/', ContactRequestListView.as_view(), name='get-all-contact-requests-for-admin'),
@@ -48,7 +49,8 @@ urlpatterns = [
     path('all_investgators/', GetAllInvestsViews.as_view(), name='get-all-investgators-for-admin'),
     path('telentee/<int:user_id>/', GetTalenteeByIdViews.as_view(), name='get-talentee-by-id-admin-for-admin'),
     path('Investgator/<int:user_id>/', GetInvestByIdViews.as_view(), name='get-Investgator-by-id-for-admin'),
-   
+    path('stastics/admin/', StatsticsForAdminView.as_view(), name='numbers-(t,i,c)-for-admin'),
+    
     #Talentee
     path('register/Talentee/', TalenteeRegistrationView.as_view(), name='register-Talentee'),
     #talent views
