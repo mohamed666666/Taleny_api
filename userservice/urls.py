@@ -30,7 +30,9 @@ from .views.Usersviews import (UsersOrderByInterstsView,
                                UserSearchAPIView
 )
 from .views.ProfileViews import( UserProflieByid,CurrentUserProflie,
-                                UpdateUserProflie)
+                                UpdateUserProflie , UserProflieStastics,
+                                CurrentUserProflieStastics
+                                )
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -76,12 +78,14 @@ urlpatterns = [
     path('following/',usersFollowedByCurrentUserView.as_view(),name='get_follows_of_current_user'),
     
     #user profile  
+    path('user_profile/', CurrentUserProflie.as_view(), name='current_user_data'),
     path('user_profile/<str:user_name>/',UserProflieByid.as_view(),name='get_user_data_by_username'),
     path('user_profile/update/<str:user_name>/',UpdateUserProflie.as_view(),name='update_user_data-by-username'),
-    path('user_profile/',CurrentUserProflie.as_view(),name='current_user_data'),
-    
+    path('profile/statstics/', CurrentUserProflieStastics.as_view(), name='statsics-of-Current-user'),
+    path('profile/statstics/<str:user_name>/', UserProflieStastics.as_view(), name='statsics-of-user-by-user_name'),
     
     #search for users 
+    
     path('search/',UserSearchAPIView.as_view(),name='serach_by_q parameter_get_user_data'),
     
     # intersts 
