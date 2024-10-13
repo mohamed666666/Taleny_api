@@ -24,12 +24,36 @@ class FollowReqesutsAcceptSerializer(serializers.ModelSerializer):
     
 
 
-class FollowToCurrentUserSerlaizer(serializers.ModelSerializer):
+
+class FollowingsOfCurrentUserSerlaizer(serializers.ModelSerializer):
+    
+    follow_to = UserSerializer()
+    
+    status=serializers.SerializerMethodField()
+    class Meta:
+        model = Follow
+        fields=['id','follow_to','status']
+        
+    def get_status(self,obj):
+        if obj.status:
+            return 'Follow_accepted'
+        return 'pending'
+    
+
+class FollowersToCurrentUserSerlaizer(serializers.ModelSerializer):
     
     follow_from = UserSerializer()
+    
+    status=serializers.SerializerMethodField()
     class Meta:
         model = Follow
         fields=['id','follow_from','status']
+        
+    def get_status(self,obj):
+        if obj.status:
+            return 'Follow_accepted'
+        return 'pending'
+    
         
 
 

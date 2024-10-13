@@ -49,7 +49,7 @@ class UserProflieByid(APIView):
     def get(self, request, user_name):
         try:
             user = UserBase.objects.get(user_name=user_name)
-            serializer = ProfileSerializer(user)
+            serializer = ProfileSerializer(user,context={'request_user':request.user})
             return Response(serializer.data)
         except UserBase.DoesNotExist:
             return Response({"error": "User not found"}, status=404)

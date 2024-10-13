@@ -73,9 +73,9 @@ urlpatterns = [
     path('createfollow/',FollowCreateView.as_view(),name='create_follow'),
     path('deletefollow/',FollowDeleteView.as_view(),name='delete_follow'),
     path('follow_requests/',FollowerRequestsToCurrentUserView.as_view(),name='get_pending_requests'),
-    path('followers/',FollowersToCurrentUserView.as_view(),name='get_follows_current_user'),
+    path('followers/',FollowersToCurrentUserView.as_view(),name='get_followers_to_current_user'),
     path('accept_follow/',AcceptFollowView.as_view(),name='accept_follows_current_user'),
-    path('following/',usersFollowedByCurrentUserView.as_view(),name='get_follows_of_current_user'),
+    path('following/',usersFollowedByCurrentUserView.as_view(),name='get_followings_of_current_user'),
     
     #user profile  
     path('user_profile/', CurrentUserProflie.as_view(), name='current_user_data'),

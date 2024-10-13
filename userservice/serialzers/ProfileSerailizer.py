@@ -2,10 +2,12 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from ..models.Baseuser import UserBase
 from ..models.Cover import CoverPhoto
+from ..models.follow import Follow
 
 class ProfileSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField()
     coverphoto = serializers.SerializerMethodField()
+    following=serializers.SerializerMethodField()
     class Meta:
         model = UserBase
         fields = [
@@ -16,7 +18,8 @@ class ProfileSerializer(serializers.ModelSerializer):
             'title',
             'profile_image',
             'role',
-            'coverphoto'
+            'coverphoto',
+            'following'
         ]
         read_only_fields = ['user_name','id']
     
@@ -36,6 +39,22 @@ class ProfileSerializer(serializers.ModelSerializer):
             return cover_photo.image.url
         return None
 
+    def get_following(self,object):
+        user = self.context.get('request_user')
+        
+        if user:
+            try:
+                # Check if there's a follow relationship between request.user and the post creator
+                follow = Follow.objects.get(follow_from=user, follow_to=object)
+                
+                # Return status based on the follow status
+                if follow.status:
+                    return "following"
+                else:
+                    return "pending"
+            except Follow.DoesNotExist:
+                return "notfollowing"
+        return None
 
 
 class ProfileUserUpdateSerializer(serializers.ModelSerializer):

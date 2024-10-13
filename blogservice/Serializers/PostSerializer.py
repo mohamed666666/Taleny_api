@@ -79,10 +79,11 @@ class RetrivePostSerializer(serializers.ModelSerializer):
     comments_count=serializers.SerializerMethodField()
     following=serializers.SerializerMethodField()
     shares_count=serializers.SerializerMethodField()
+    liked=serializers.SerializerMethodField()
     class Meta:
         model = Post
         fields = ['id','created_at',  'content','created_by', 'attachments',
-                  'comments_count' ,'likes_count','following','shares_count']
+                  'comments_count' ,'likes_count','following','shares_count','liked']
         read_only_fields = ['id', 'created_at']
         
     def get_likes_count(self,object):
@@ -95,7 +96,7 @@ class RetrivePostSerializer(serializers.ModelSerializer):
     
    
     def get_following(self,object):
-        user = self.context.get('user')
+        user = self.context.get('request_user')
         
         if user:
             try:
@@ -109,7 +110,12 @@ class RetrivePostSerializer(serializers.ModelSerializer):
                     return "pending"
             except Follow.DoesNotExist:
                 return "notfollowing"
-        return "Erorr"
+        return None
     
     def get_shares_count(self,object):
         return(Share.objects.filter(post=object).count())
+    
+    def get_liked(self,object):
+        user = self.context.get('request_user')
+        return Like.objects.filter(content_type=ContentType.objects.get(model='post'), created_by=user,object_id=object.id).exists()
+        

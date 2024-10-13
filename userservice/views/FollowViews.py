@@ -1,8 +1,10 @@
 from rest_framework.permissions import IsAuthenticated ,AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from ..serialzers.FollowSerlaizer import( FollowCreateSerializer,FollowDeleteSerializer 
-                                ,FollowToCurrentUserSerlaizer ,FollowReqesutsAcceptSerializer)
+from ..serialzers.FollowSerlaizer import( FollowCreateSerializer,FollowDeleteSerializer ,
+                                FollowersToCurrentUserSerlaizer,
+                                FollowingsOfCurrentUserSerlaizer ,
+                                FollowReqesutsAcceptSerializer)
 from rest_framework import status
 from ..models.follow import Follow
 
@@ -37,15 +39,16 @@ class FollowersToCurrentUserView(APIView):
     def get(self, request):
         # Check if the follow relationship exists
         follows=Follow.objects.filter(follow_to=request.user ,status=True)
-        selaizer=FollowToCurrentUserSerlaizer(follows,many=True)
+        selaizer=FollowersToCurrentUserSerlaizer(follows,many=True)
         return Response(selaizer.data ,status=200)
     
+
 
 class usersFollowedByCurrentUserView(APIView):
     def get(self, request):
         # Check if the follow relationship exists
         follows=Follow.objects.filter(follow_from=request.user ,status=True)
-        selaizer=FollowToCurrentUserSerlaizer(follows,many=True)
+        selaizer=FollowingsOfCurrentUserSerlaizer(follows,many=True)
         return Response(selaizer.data ,status=200)
 
 
@@ -53,7 +56,7 @@ class FollowerRequestsToCurrentUserView(APIView):
     def get(self, request):
         # Check if the follow relationship exists
         follows=Follow.objects.filter(follow_to=request.user ,status=False)
-        selaizer=FollowToCurrentUserSerlaizer(follows,many=True)
+        selaizer=FollowingsOfCurrentUserSerlaizer(follows,many=True)
         return Response(selaizer.data ,status=200)
     
 
