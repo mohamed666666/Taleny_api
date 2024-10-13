@@ -83,3 +83,13 @@ class ProfileUserUpdateSerializer(serializers.ModelSerializer):
             CoverPhoto.objects.update_or_create(user=instance, defaults={'image': coverphoto_data})
         
         return super().update(instance, validated_data)
+    def to_representation(self, instance):
+        """
+        Customize the serialized output.
+        """
+        representation = super().to_representation(instance)
+        # Add attachments in the representation
+        attachment = CoverPhoto.objects.get(user=instance)
+        representation['coverphoto'] = attachment.image.url
+         
+        return representation
