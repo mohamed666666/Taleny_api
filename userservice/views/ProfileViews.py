@@ -82,9 +82,10 @@ def StatsticsResponseData(user):
     user_posts = Post.objects.filter(created_by_id=user.id)
     
     return {
-            "followers": Follow.objects.filter(follow_to=user).count(),
-            "followings": Follow.objects.filter(follow_from=user).count(),
+            "followers": Follow.objects.filter(follow_to=user,status=True).count(),
+            "followings": Follow.objects.filter(follow_from=user,status=True).count(),
             "posts": Post.objects.filter(created_by=user).count(),
+            "requests": Follow.objects.filter(follow_to=user,status=False).count(),
             'likes':Like.objects.filter(
         content_type=post_content_type,  # Only likes for posts
         object_id__in=user_posts.values_list('id', flat=True)  # Match post IDs
