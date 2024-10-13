@@ -96,6 +96,7 @@ class RetrivePostSerializer(serializers.ModelSerializer):
    
     def get_following(self, object):
         request = self.context.get('request')
+        
         if request and request.user.is_authenticated:
             try:
                 # Check if there's a follow relationship between request.user and the post creator
@@ -108,7 +109,7 @@ class RetrivePostSerializer(serializers.ModelSerializer):
                     return "pending"
             except Follow.DoesNotExist:
                 return "notfollowing"
-        return "notfollowing"
+        return "Erorr"
     
     def get_shares_count(self,object):
         return(Share.objects.filter(post=object).count())

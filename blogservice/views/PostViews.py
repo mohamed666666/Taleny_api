@@ -20,7 +20,7 @@ class GetAllPostsView(APIView):
         paginator.page_size = 3  # You can also set this dynamically
         paginated_posts = paginator.paginate_queryset(posts, request)
 
-        serializer = RetrivePostSerializer(paginated_posts, many=True)
+        serializer = RetrivePostSerializer(paginated_posts,context={'request':request}, many=True)
         return paginator.get_paginated_response(serializer.data)
     
 
