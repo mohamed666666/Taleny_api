@@ -6,7 +6,7 @@ from .BaseUserSerlaizer import UserSerializer
 
 class FollowReqesutsAcceptSerializer(serializers.ModelSerializer):
     follow_from = UserSerializer(read_only=True)
-
+    status=serializers.SerializerMethodField()
     class Meta:
         model = Follow
         fields = ['id', 'follow_from', 'status']
@@ -21,6 +21,10 @@ class FollowReqesutsAcceptSerializer(serializers.ModelSerializer):
         instance.status = True
         instance.save()
         return instance
+    def get_status(self,obj):
+        if obj.status:
+            return 'Follow_accepted'
+        return 'pending'
     
 
 
@@ -91,6 +95,18 @@ class FollowDeleteSerializer(serializers.Serializer):
     def validate(self, data):
         follow_from = self.context['request'].user
         follow_to = data['follow_to']
+        # Check if the follow relationship exists
+        if not Follow.objects.filter(follow_from=follow_from, follow_to=follow_to).exists():
+            raise serializers.ValidationError("Follow relationship does not exist.")
+        return data
+    
+
+class FollowRejectSerializer(serializers.Serializer):
+    follow_from= serializers.PrimaryKeyRelatedField(queryset=UserBase.objects.all())
+
+    def validate(self, data):
+        follow_to = self.context['request'].user
+        follow_from = data['follow_from']
         # Check if the follow relationship exists
         if not Follow.objects.filter(follow_from=follow_from, follow_to=follow_to).exists():
             raise serializers.ValidationError("Follow relationship does not exist.")

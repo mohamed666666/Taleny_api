@@ -15,7 +15,7 @@ from .views.SkillViews import (SkillCreateGetView,
 from .views.FollowViews import (FollowCreateView,
                                 FollowDeleteView,FollowersToCurrentUserView,
                                AcceptFollowView,usersFollowedByCurrentUserView ,
-                               FollowerRequestsToCurrentUserView
+                               FollowerRequestsToCurrentUserView,FollowRejectView
                                )
 #inersts 
 from .views.InterstsViews import (Get_allInterstsView,SelectInterestView,
@@ -75,6 +75,7 @@ urlpatterns = [
     path('follow_requests/',FollowerRequestsToCurrentUserView.as_view(),name='get_pending_requests'),
     path('followers/',FollowersToCurrentUserView.as_view(),name='get_followers_to_current_user'),
     path('accept_follow/',AcceptFollowView.as_view(),name='accept_follows_current_user'),
+    path('reject_follow/',FollowRejectView.as_view(),name='reject_follows_current_user'),
     path('following/',usersFollowedByCurrentUserView.as_view(),name='get_followings_of_current_user'),
     
     #user profile  

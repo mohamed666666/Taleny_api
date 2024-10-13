@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from ..serialzers.FollowSerlaizer import( FollowCreateSerializer,FollowDeleteSerializer ,
                                 FollowersToCurrentUserSerlaizer,
                                 FollowingsOfCurrentUserSerlaizer ,
+                                FollowRejectSerializer,
                                 FollowReqesutsAcceptSerializer)
 from rest_framework import status
 from ..models.follow import Follow
@@ -32,7 +33,7 @@ class FollowDeleteView(APIView):
             follow_instance.delete()
             return Response({'message': 'Unfollow successful.'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     
 
 class FollowersToCurrentUserView(APIView):
@@ -56,7 +57,7 @@ class FollowerRequestsToCurrentUserView(APIView):
     def get(self, request):
         # Check if the follow relationship exists
         follows=Follow.objects.filter(follow_to=request.user ,status=False)
-        selaizer=FollowingsOfCurrentUserSerlaizer(follows,many=True)
+        selaizer=FollowReqesutsAcceptSerializer(follows,many=True)
         return Response(selaizer.data ,status=200)
     
 
@@ -85,3 +86,17 @@ class AcceptFollowView(APIView):
 
     
 
+
+class FollowRejectView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        serializer = FollowRejectSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            # If validation passes, delete the follow relationship
+            follow_to = request.user
+            follow_from = serializer.validated_data['follow_from']
+            follow_instance = Follow.objects.filter(follow_from=follow_from, follow_to=follow_to,status=False).first()
+            follow_instance.delete()
+            return Response({'message': 'Reject successful.'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
