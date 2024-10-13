@@ -24,7 +24,8 @@ from .views.InterstsViews import (Get_allInterstsView,SelectInterestView,
 from .views.AdminViews import (ContactRequestCreateView,GetTalenteeByIdViews,
                                ContactRequestListView,GetInvestByIdViews,
                                GetAllTalenteesViews, GetAllInvestsViews,
-                               ContactRequestByidView,StatsticsForAdminView
+                               ContactRequestByidView,StatsticsForAdminView,
+                               ContactRequestHistoryView
                                )
 from .views.Usersviews import (UsersOrderByInterstsView, 
                                UserSearchAPIView
@@ -52,7 +53,7 @@ urlpatterns = [
     path('telentee/<int:user_id>/', GetTalenteeByIdViews.as_view(), name='get-talentee-by-id-admin-for-admin'),
     path('Investgator/<int:user_id>/', GetInvestByIdViews.as_view(), name='get-Investgator-by-id-for-admin'),
     path('stastics/admin/', StatsticsForAdminView.as_view(), name='numbers-(t,i,c)-for-admin'),
-    
+    path('contactrequests/history/<int:year>/', ContactRequestHistoryView.as_view(), name='contact-request-history'),
     #Talentee
     path('register/Talentee/', TalenteeRegistrationView.as_view(), name='register-Talentee'),
     #talent views

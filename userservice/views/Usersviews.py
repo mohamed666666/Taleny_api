@@ -57,15 +57,12 @@ class UserSearchAPIView(generics.GenericAPIView):
                 Q(title__icontains=query)   
                 
             ).exclude(Q(theadmin__isnull=False))
-           
-        else:
-            users = UserBase.objects.all().exclude(Q(theadmin__isnull=False))
-
         # Pagination
-        paginator = PageNumberPagination()
-        paginator.page_size = 30  # Set page size before paginate_queryset
-        paginated_users = paginator.paginate_queryset(users, request)
+            paginator = PageNumberPagination()
+            paginator.page_size = 30  # Set page size before paginate_queryset
+            paginated_users = paginator.paginate_queryset(users, request)
 
         # Serialize and return paginated data
-        serializer = self.get_serializer(paginated_users, many=True)
-        return paginator.get_paginated_response(serializer.data)
+            serializer = self.get_serializer(paginated_users, many=True)
+            return paginator.get_paginated_response(serializer.data)
+        return Response({'Message':'no mattched users'},status=200)

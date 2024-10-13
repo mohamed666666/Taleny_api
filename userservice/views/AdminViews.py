@@ -12,8 +12,11 @@ from ..serialzers.InvestgatorSerlaizer import InvestgatorRetriveSerializer
 from rest_framework.views import APIView
 from rest_framework.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
+from django.db.models.functions import ExtractMonth
+from django.db.models import Count
+from datetime import datetime
 
-
+ 
 class ContactRequestCreateView(generics.CreateAPIView):
     serializer_class = ContactRequestSerializer
     permission_classes = [IsAuthenticated]
@@ -107,6 +110,35 @@ class GetInvestByIdViews(APIView):
         invest=get_object_or_404(Investgator,pk=user_id)
         serializer=InvestgatorRetriveSerializer(invest)
         return Response(serializer.data,status=200)
+    
+    
+
+class ContactRequestHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, year):
+        adminpermssion(request.user)
+        try:
+            # Ensure year is a valid integer
+            year = int(year)
+        except ValueError:
+            return Response({"detail": "Invalid year format."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Query ContactRequests from the specified year and count by month
+        contact_requests = (
+            ContactRequest.objects.filter(created_at__year=year)
+            .annotate(month=ExtractMonth('created_at'))
+            .values('month')
+            .annotate(count=Count('id'))
+            .order_by('month')
+        )
+
+        # Prepare the history dictionary for each month
+        history = {month: 0 for month in range(1, 13)}
+        for entry in contact_requests:
+            history[entry['month']] = entry['count']
+
+        return Response({"year": year, "history": history})
 
     
     
