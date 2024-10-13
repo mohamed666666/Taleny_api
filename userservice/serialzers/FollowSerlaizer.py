@@ -21,6 +21,7 @@ class FollowReqesutsAcceptSerializer(serializers.ModelSerializer):
         instance.status = True
         instance.save()
         return instance
+    
     def get_status(self,obj):
         if obj.status:
             return 'Follow_accepted'

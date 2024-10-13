@@ -57,7 +57,7 @@ class FollowerRequestsToCurrentUserView(APIView):
     def get(self, request):
         # Check if the follow relationship exists
         follows=Follow.objects.filter(follow_to=request.user ,status=False)
-        selaizer=FollowReqesutsAcceptSerializer(follows,many=True)
+        selaizer=FollowersToCurrentUserSerlaizer(follows,many=True)
         return Response(selaizer.data ,status=200)
     
 
@@ -96,7 +96,7 @@ class FollowRejectView(APIView):
             # If validation passes, delete the follow relationship
             follow_to = request.user
             follow_from = serializer.validated_data['follow_from']
-            follow_instance = Follow.objects.filter(follow_from=follow_from, follow_to=follow_to,status=False).first()
+            follow_instance = Follow.objects.get(follow_from=follow_from, follow_to=follow_to)
             follow_instance.delete()
-            return Response({'message': 'Reject successful.'}, status=status.HTTP_200_OK)
+            return Response({'message': 'Follow Deleted successful.'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
