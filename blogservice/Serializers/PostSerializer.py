@@ -94,13 +94,13 @@ class RetrivePostSerializer(serializers.ModelSerializer):
         return(Comment.objects.filter(on_post=object).count())
     
    
-    def get_following(self, object):
-        request = self.context.get('request')
+    def get_following(self,object):
+        user = self.context.get('user')
         
-        if request and request.user.is_authenticated:
+        if user:
             try:
                 # Check if there's a follow relationship between request.user and the post creator
-                follow = Follow.objects.get(follow_from=request.user, follow_to=object.created_by)
+                follow = Follow.objects.get(follow_from=user, follow_to=object.created_by)
                 
                 # Return status based on the follow status
                 if follow.status:
