@@ -3,11 +3,13 @@ from rest_framework import serializers
 from ..models.Baseuser import UserBase
 from ..models.Cover import CoverPhoto
 from ..models.follow import Follow
+from ..models.admin import ContactRequest
 
 class ProfileSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField()
     coverphoto = serializers.SerializerMethodField()
     following=serializers.SerializerMethodField()
+    contacted=serializers.SerializerMethodField()
     class Meta:
         model = UserBase
         fields = [
@@ -22,7 +24,8 @@ class ProfileSerializer(serializers.ModelSerializer):
             'profile_image',
             'role',
             'coverphoto',
-            'following'
+            'following',
+            'contacted'
         ]
         read_only_fields = ['user_name','id']
     
@@ -58,6 +61,24 @@ class ProfileSerializer(serializers.ModelSerializer):
             except Follow.DoesNotExist:
                 return "notfollowing"
         return None
+    
+    def get_contacted(self,object):
+        user = self.context.get('request_user')
+        
+        if user:
+            try:
+                # Check if there's a follow relationship between request.user and the post creator
+                contact = ContactRequest.objects.get(request_creator=user)
+                # Return status based on the follow status
+                if contact.status:
+                    return "created"
+                else:
+                    return "pending"
+            except ContactRequest.DoesNotExist:
+                return None
+        return None
+    
+    
 
 
 class ProfileUserUpdateSerializer(serializers.ModelSerializer):
