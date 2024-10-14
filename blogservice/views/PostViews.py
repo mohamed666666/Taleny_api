@@ -120,5 +120,5 @@ class GetPostsOfUserByIdView(APIView):
             serializer = RetrivePostSerializer(paginated_posts,context={'request_user':request.user}, many=True)
             return paginator.get_paginated_response(serializer.data)
         except UserBase.DoesNotExist:
-            return Response({'Message':'('+user_name+')'+' this username not exist.'},status=404)
+            return Response({'Message':'( '+user_name+' )'+' this username not exist.'},status=404)
     

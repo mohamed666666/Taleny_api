@@ -13,6 +13,9 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'user_name',
+            'area',
+            'government',
+            'phone_number',
             'full_name',
             'about',
             'title',
