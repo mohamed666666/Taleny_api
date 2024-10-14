@@ -44,6 +44,7 @@ class FollowingsOfCurrentUserSerlaizer(serializers.ModelSerializer):
             return 'Follow_accepted'
         return 'pending'
     
+    
 
 class FollowersToCurrentUserSerlaizer(serializers.ModelSerializer):
     

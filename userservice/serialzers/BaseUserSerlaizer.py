@@ -63,6 +63,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField()
+    coverphoto = serializers.SerializerMethodField()
     class Meta:
         model = UserBase
         fields = [
@@ -72,6 +73,7 @@ class UserSerializer(serializers.ModelSerializer):
             'title',
             'profile_image',
             'role',
+            'coverphoto'
         ]
         read_only_fields = ['user_name','id']
     
@@ -84,4 +86,14 @@ class UserSerializer(serializers.ModelSerializer):
             return 'Admin'
         
         return 'Un-known'  # In case the user is neither
+    
+    
+    def get_coverphoto(self, obj):
+        cover_photo = CoverPhoto.objects.filter(user=obj).first()
+        
+        if cover_photo:
+            return cover_photo.image.url
+        return None
+    
+    
 
