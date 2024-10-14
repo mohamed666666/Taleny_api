@@ -50,8 +50,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         # create fcm token 
         cover=CoverPhoto.objects.create(user=user)
         cover.save()
-        fcm=CustomDevice(user=user,token=validated_data['RegisterationFcmToken'])
-        fcm.save()
+        #fcm=CustomDevice(user=user,token=validated_data['RegisterationFcmToken'])
+        #fcm.save()
         # Save identification files
         for identification_file in identifications_data:
             Identifications.objects.create(user=user, url=identification_file)
