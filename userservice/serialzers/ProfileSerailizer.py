@@ -4,6 +4,7 @@ from ..models.Baseuser import UserBase
 from ..models.Cover import CoverPhoto
 from ..models.follow import Follow
 from ..models.admin import ContactRequest
+from ..models.investgator import Investgator
 
 class ProfileSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField()
@@ -67,14 +68,17 @@ class ProfileSerializer(serializers.ModelSerializer):
         
         if user:
             try:
+                investigator = Investgator.objects.get(user_base=user)
+                # Check if there's a contact request created by this investigator
+                contact = ContactRequest.objects.get(request_creator=investigator)
+                # Return status based on the contact status
                 # Check if there's a follow relationship between request.user and the post creator
-                contact = ContactRequest.objects.get(request_creator=user)
                 # Return status based on the follow status
                 if contact.status:
                     return "created"
                 else:
                     return "pending"
-            except ContactRequest.DoesNotExist:
+            except (Investgator.DoesNotExist, ContactRequest.DoesNotExist):
                 return None
         return None
     
