@@ -68,7 +68,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         
         if user:
             try:
-                investigator = Investgator.objects.get(user_base=user)
+                investigator = Investgator.objects.get(user=user)
                 # Check if there's a contact request created by this investigator
                 contact = ContactRequest.objects.get(request_creator=investigator)
                 # Return status based on the contact status
