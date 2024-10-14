@@ -64,7 +64,7 @@ urlpatterns = [
     path('talenteeskills/',SkillCreateGetView.as_view(),name='add_skill'),
     path('talenteeskills/',SkillCreateGetView.as_view(),name='get_skills'),
     path('talentee-skill/<int:skill_id>/',SkillByID.as_view(),name='get_skill_by_skill-id'),
-    path('talenteeskills/<int:user_id>/',TalnenteeSkillsViewByID.as_view(),name='get_skills_byusr-id'),
+    path('talenteeskills/<str:user_name>/',TalnenteeSkillsViewByID.as_view(),name='get_skills_byusr-id'),
     path('talenteeskills/update/<int:skill_id>/',UpdateSkillView.as_view(),name='update_skilldata_by-skill-id'),
     path('talenteeskills/delete/<int:skill_id>/',DeleteSkillView.as_view(),name='delete_skilldata_by-skill-id'),
     

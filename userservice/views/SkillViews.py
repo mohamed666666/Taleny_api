@@ -98,9 +98,9 @@ class DeleteSkillView(APIView):
 class TalnenteeSkillsViewByID(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, user_id):
+    def get(self, request, user_name):
         # Find the Talentee profile by the provided user ID
-        talentee = get_object_or_404(Talentee, user__id=user_id)
+        talentee = get_object_or_404(Talentee, user__user_name=user_name)
         # Retrieve all skills linked to the Talentee via the skilled_in model
         skilled_at = skilled_in.objects.filter(talentee=talentee)
         # Serialize the skilled_in instances with related skills and attachments
