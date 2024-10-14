@@ -108,14 +108,17 @@ class GetPostsOfUserByIdView(APIView):
     permission_classes = [IsAuthenticated] 
 
     def get(self, request,user_name):
-        user=UserBase.objects.get(user_name=user_name)
-        posts = Post.objects.filter(created_by=user.id)
+        try:
+            user=UserBase.objects.get(user_name=user_name)
+            posts = Post.objects.filter(created_by=user.id)
 
         # Apply pagination
-        paginator = PageNumberPagination()
-        paginator.page_size = 3  # You can also set this dynamically
-        paginated_posts = paginator.paginate_queryset(posts, request)
+            paginator = PageNumberPagination()
+            paginator.page_size = 3  # You can also set this dynamically
+            paginated_posts = paginator.paginate_queryset(posts, request)
 
-        serializer = RetrivePostSerializer(paginated_posts,context={'request_user':request.user}, many=True)
-        return paginator.get_paginated_response(serializer.data)
+            serializer = RetrivePostSerializer(paginated_posts,context={'request_user':request.user}, many=True)
+            return paginator.get_paginated_response(serializer.data)
+        except UserBase.DoesNotExist:
+            return Response({'Message':'('+user_name+')'+' this username not exist.'},status=404)
     
