@@ -24,6 +24,7 @@ class FollowDeleteView(APIView):
     permission_classes = [IsAuthenticated]
 
     def delete(self, request):
+        
         serializer = FollowDeleteSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             # If validation passes, delete the follow relationship
@@ -86,17 +87,16 @@ class AcceptFollowView(APIView):
 
     
 
-
 class FollowRejectView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def delete(self, request):
-        serializer = FollowRejectSerializer(data=request.data, context={'request': request})
-        if serializer.is_valid():
-            # If validation passes, delete the follow relationship
-            follow_to = request.user
-            follow_from = serializer.validated_data['follow_from']
-            follow_instance = Follow.objects.get(follow_from=follow_from, follow_to=follow_to)
+    def delete(self, request, follow_id):
+        try:
+            # Retrieve the follow instance using the provided follow_id
+            follow_instance = Follow.objects.get(id=follow_id, follow_to=request.user)
+            
+            # Delete the follow instance
             follow_instance.delete()
-            return Response({'message': 'Follow Deleted successful.'}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'Follow Deleted successfully.'}, status=status.HTTP_200_OK)
+        except Follow.DoesNotExist:
+            return Response({'error': 'Follow relationship does not exist.'}, status=status.HTTP_404_NOT_FOUND)

@@ -8,4 +8,5 @@ class Follow(models.Model):
     status=models.BooleanField(default=False)
     
     class Meta:
+        
         unique_together =('follow_from','follow_to')

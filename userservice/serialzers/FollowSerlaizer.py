@@ -102,17 +102,10 @@ class FollowDeleteSerializer(serializers.Serializer):
             raise serializers.ValidationError("Follow relationship does not exist.")
         return data
     
-
-class FollowRejectSerializer(serializers.Serializer):
-    follow_from= serializers.PrimaryKeyRelatedField(queryset=UserBase.objects.all())
-
-    def validate(self, data):
-        follow_to = self.context['request'].user
-        follow_from = data['follow_from']
-        # Check if the follow relationship exists
-        if not Follow.objects.filter(follow_from=follow_from, follow_to=follow_to).exists():
-            raise serializers.ValidationError("Follow relationship does not exist.")
-        return data
+class FollowRejectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Follow
+        fields = ['id']
 
 
     
