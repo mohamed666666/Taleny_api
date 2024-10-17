@@ -46,12 +46,13 @@ INSTALLED_APPS = [
     'fcm_django',
     'blogservice',
     'userservice',
+    'otpservice',
     'rest_framework',
     "corsheaders",
     'rest_framework.authtoken' 
 ]
 
-#Fcm 
+#Fcm fire base cloud  messaging 
 FCM_DJANGO_FCMDEVICE_MODEL = "notificationservice.CustomDevice"
 
 # Application definition 
@@ -102,7 +103,7 @@ ROOT_URLCONF = 'Taleny.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR/'templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -192,3 +193,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWS_CREDENTIALS = True
+
+
+
+#email server configuration 
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+'''
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.example.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your-email@example.com'
+EMAIL_HOST_PASSWORD = 'your-password'
+'''

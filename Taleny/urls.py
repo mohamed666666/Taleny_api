@@ -23,4 +23,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/users/', include('userservice.urls')),
     path('api/blogs/', include('blogservice.urls')),
+    path('api/otp/', include(('otpservice.urls', 'otpservice'), namespace='otpservice')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
